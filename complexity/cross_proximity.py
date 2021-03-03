@@ -4,6 +4,15 @@ import numpy as np
 import pandas as pd
 
 def cross_proximity(rcas_a, rcas_b):
+    """ cross-proximity index correspond to the minimum probability that a country presents comparative advantages in a patent in a given area given that it has comparative advantages in an area of ​​knowledge, or vice versa, where values ​​that are more close to unity indicate a stronger relationship between the patent area and the knowledge area.
+
+    Args:
+        rcas_a (pandas dataframe): The pivot table obtained from the RCA function for a one characteristic to evaluate
+        rcas_b (pandas dataframe): The pivot table obtained from the RCA function for the other characteristic to evaluate 
+
+    Returns:
+        cross_proximity (pandas dataframe): matrix with the proximity between the two types of elements evaluated that can be used in the calculation of the *cross-relatedness*.
+    """
     # Converts RCA values to 0-1
     rcas_a[rcas_a >= 1] = 1
     rcas_a[rcas_a < 1] = 0

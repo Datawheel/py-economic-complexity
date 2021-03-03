@@ -3,6 +3,14 @@ import numpy as np
 import pandas as pd
 
 def rca(tbl):
+    """ this function return the RCA matrix from a pivot table using a geographic index, columns with the categories to be evaluated and the measurement of the data as values.
+
+    Args:
+        tbl (pandas dataframe): pivot table using a geographic index, columns with the categories to be evaluated and the measurement of the data as values.
+
+    Returns:
+        rcas (pandas dataframe): RCA matrix with real values.
+    """
 
     # fill missing values with zeros
     tbl = tbl.fillna(0)

@@ -6,9 +6,9 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="complexity-pkg", # Replace with your own username
     version="0.0.1",
-    author="atawheel, Marcos Peréz",
+    author="Datawheel, Marcos Peréz",
     author_email="marcos@datawheel.us",
-    description="package to compute economic complexity",
+    description="package to compute economic complexity measures",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",

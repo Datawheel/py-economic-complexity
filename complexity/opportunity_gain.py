@@ -5,6 +5,16 @@ import pandas as pd
 from .relatedness import relatedness
 
 def opportunity_gain(rcas, proximities, pci):
+    """[summary]
+
+    Args:
+        rcas (pandas dataframe): [description]
+        proximities (pandas dataframe): [description]
+        pci (pandas dataframe): [description]
+
+    Returns:
+        [type]: [description]
+    """
     rcas = rcas.copy()
     rcas[rcas >= 1] = 1
     rcas[rcas < 1] = 0

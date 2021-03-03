@@ -3,6 +3,17 @@ import sys
 import numpy as np
 
 def proximity(rcas, how="max"):
+    """ this function calculate the *Proximity* index which measures the minimum probability that a country has comparative advantages in the export of a product *i*, given that it has comparative advantages in a product *j*.
+    This function only needs the pivot table obtained from the RCA function and returns a square matrix with the proximity between the elements.
+
+
+    Args:
+        rcas (pandas dataframe): RCA pivot table
+        how (str, optional): [description]. Defaults to "max".
+
+    Returns:
+        phi (pandas dataframe): matrix with the proximity between the elements
+    """
     rcas = rcas.copy()
     rcas[rcas >= 1] = 1
     rcas[rcas < 1] = 0

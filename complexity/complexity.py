@@ -3,15 +3,16 @@ import numpy as np
 import pandas as pd
 
 def complexity(rcas, iterations=20, drop=True):
-    """compute the ECI and PCI from a RCA matrix  
+    """Calculates Economic Complexity Index (ECI) and Product Complexity Index (PCI) from a RCA matrix
 
     Args:
-        rcas (pandas dataframe): RCA marix in a pandas dataframe type.
-        iterations (int, optional): cutoff of recursive calculation of kp and kc. Defaults to 20.
-        drop (bool, optional): validation variable to ensure that return include NaN values. Defaults to True.
+        rcas (pandas dataframe): RCA matrix.
+        iterations (int, optional): recursive calculation cutoff for kp and kc. Defaults value = 20.
+        drop (bool, optional): boolean to ensure that returns include NaN values. Defaults value = True.
 
     Returns:
-        geo_complexity, prod_complexity (pandas series): the complexity of the rows (countries int the EC theoretical framework) and columns (products) respectively. 
+        geo_complexity (pandas series): ECI
+        prod_complexity (pandas series): PCI
     """
     #Binarize rca input 
     rcas = rcas.copy()

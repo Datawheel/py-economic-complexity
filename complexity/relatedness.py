@@ -4,6 +4,15 @@ import numpy as np
 import pandas as pd
 
 def relatedness(rcas, proximities):
+    """probability that a location (a country, city, or region), enters an economic activity (e.g. a product, industry, technology), grows with the number of related activities present in a location.
+
+    Args:
+        rcas (pandas dataframe): RCA pivot table 
+        proximities (pandas dataframe): matrix with the proximity between the elements
+
+    Returns:
+        densities: a matrix with the probability that a location generates comparative advantages in a economic activity..
+    """
     rcas = rcas.copy()
     rcas[rcas >= 1] = 1
     rcas[rcas < 1] = 0

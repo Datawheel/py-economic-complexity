@@ -1,4 +1,6 @@
 build/
 dist/
-regression_pkg*/
+complexity_pkg_mcperez.egg-info/
+complexity_pkg*
 .DS_Store
+tests/
