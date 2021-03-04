@@ -4,10 +4,10 @@ Economic Complexity studies the geography and dynamics of economic activities us
 This package allows to calculate Economic Complexity measures. For further references about methodology and implicances of Economic Complexity itself, you can visit [oec.world](https://oec.world/en/resources/methods#economic-complexity).
 
 ## Requirement 
-
-* python 3.6+ 
-* numpy
-* pandas
+> used in the development 
+* python 3.8.2
+* numpy 1.18.2
+* pandas 1.1.1
 
 ## Install
 
@@ -40,13 +40,15 @@ the package contain the follwing modules
 * cross_proximity
 * cross_relatedness
 
-each module is domented by docstring. write into your python IDLE the module's name and question symbol to read the documentation.> ex. if you import the complexity package as `import complexity as cmplx` then the command `cmplx.rca?` show you the information about rca module)
+each module is documented by docstring. Write in your python IDLE the module's name and question symbol to read the documentation.> ex. if you import the complexity package as `import complexity as cmplx` then the command `cmplx.rca?` shows you the information about rca module)
 
 ## Brief Tutorial 
 
 In this section we are going to development a brief example to show you how use this package to obtain a ECI ranking using data from [oec.world](oec.world). 
 
-Let us start to call some packages, including the complaxity package (that we will call `cmplx`)
+Our goal will be to reproduce the ECI ranking using 2018 exports data classified according the Harmonized System (HS92) with a depth of 4 Digits for countries with population of at least 1 million and exports of at least $1 billion, and products with world trade over 500 million. (for more details see [link](https://oec.world/en/resources/methods))
+
+Let us start to call some packages, including the complexity package (that we will call `cmplx`)
 ```py
 import pandas as pd
 import numpy as np
@@ -63,7 +65,7 @@ def request_data(url):
     return df
 ```
 
-Now, we fetch the data. In this case we gather the trade data and population from the OEC.
+Now, we fetch the data. In this case we gather the trade data and population using the OEC API.
 
 ```py
 url_trade = 'https://dev.oec.world/olap-proxy/data.jsonrecords?Year=2016,2017,2018&cube=trade_i_baci_a_92&drilldowns=Exporter+Country%2CHS4&measures=Trade+Value'
@@ -91,11 +93,14 @@ df_filter  = df[#(df['Country ID'].isin(df_countries['Country ID'])) &
                (df['HS4 ID'].isin(df_products['HS4 ID']))]
 ```
 
-Formating the data to compute the RCA matrix and the ECI.
-
+Formating the data to compute the RCA matrix and the ECI. 
+> the RCA module receive a pivot table as argument, where countries ids are the index and product ids the columns.
 ```py
 df_pivot = pd.pivot_table(df_filter, index=['Country ID'], columns=['HS4 ID'],values='Trade Value').reset_index().set_index('Country ID').dropna(axis=1, how="all").fillna(0).astype(float)
+```
 
+Comute the RCA matrix, ECI and PCI.
+```py
 rca = cmplx.rca(df_pivot)
 ECI,PCI = cmplx.complexity(rca)
 ```
