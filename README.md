@@ -40,13 +40,14 @@ the package contain the follwing modules
 * cross_proximity
 * cross_relatedness
 
-each module is documented by docstring. Write in your python IDLE the module's name and question symbol to read the documentation.> ex. if you import the complexity package as `import complexity as cmplx` then the command `cmplx.rca?` shows you the information about rca module)
+each module is documented by docstring. Write in your python IDLE the module's name and question symbol to read the documentation.
+> ex. if you import the complexity package as `import complexity as cmplx` then the command `cmplx.rca?` shows you the information about rca module)
 
 ## Brief Tutorial 
 
 In this section we are going to development a brief example to show you how use this package to obtain a ECI ranking using data from [oec.world](oec.world). 
 
-Our goal will be to reproduce the ECI ranking using 2018 exports data classified according the Harmonized System (HS92) with a depth of 4 Digits for countries with population of at least 1 million and exports of at least $1 billion, and products with world trade over 500 million. (for more details see [link](https://oec.world/en/resources/methods))
+> Our goal will be to reproduce the ECI ranking using 2018 exports data classified according the Harmonized System (HS92) with a depth of 4 Digits for countries with population of at least 1 million and exports of at least $1 billion, and products with world trade over 500 million. (for more details see [link](https://oec.world/en/resources/methods))
 
 Let us start to call some packages, including the complexity package (that we will call `cmplx`)
 ```py
@@ -99,7 +100,7 @@ Formating the data to compute the RCA matrix and the ECI.
 df_pivot = pd.pivot_table(df_filter, index=['Country ID'], columns=['HS4 ID'],values='Trade Value').reset_index().set_index('Country ID').dropna(axis=1, how="all").fillna(0).astype(float)
 ```
 
-Comute the RCA matrix, ECI and PCI.
+Compute the RCA matrix, ECI and PCI.
 ```py
 rca = cmplx.rca(df_pivot)
 ECI,PCI = cmplx.complexity(rca)
