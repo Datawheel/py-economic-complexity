@@ -3,5 +3,5 @@ dist/
 complexity_pkg_mcperez.egg-info/
 complexity_pkg*
 .DS_Store
-tests/
+dev_scripts/
 complexity/__pycache__
