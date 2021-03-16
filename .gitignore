@@ -1,7 +1,9 @@
+__pycache__/
+.pytest_cache/
+*.egg-info/
 build/
-dist/
-complexity_pkg_mcperez.egg-info/
-complexity_pkg*
-.DS_Store
 dev_scripts/
-complexity/__pycache__
+dist/
+
+.DS_Store
+*.pyc

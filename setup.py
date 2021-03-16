@@ -1,18 +1,23 @@
-import setuptools
+from os import path
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+from setuptools import find_packages, setup
 
-setuptools.setup(
-    name="complexity-pkg", # Replace with your own username
-    version="0.0.1",
-    author="Datawheel, Marcos Peréz",
-    author_email="marcos@datawheel.us",
-    description="package to compute economic complexity measures",
-    long_description=long_description,
+from complexity import __version__
+
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, "README.md")) as f:
+    README = f.read()
+
+setup(
+    name="complexity",
+    version=__version__,
+    description="Functions to compute Economic Complexity measures.",
+    long_description=README,
     long_description_content_type="text/markdown",
+    author="Marcos Peréz",
+    author_email="marcos@datawheel.us",
     url="",
-    packages=setuptools.find_packages(),
+    packages=find_packages(include=["complexity"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

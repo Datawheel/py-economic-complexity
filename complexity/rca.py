@@ -1,17 +1,33 @@
-import sys
+# -*- coding: utf-8 -*-
+
+"""Revealed Comparative Advantage (RCA) module
+
+The Revealed Comparative Advantage is an index introduced by Balassa (1965),
+which is used to evaluate the main products to be exported by a country,
+and their comparative advantages in relation to the level of world exports
+(Hidalgo et al., 2007).
+"""
+
 import numpy as np
 import pandas as pd
 
-def rca(tbl):
-    """ this function return the RCA matrix from a pivot table using a geographic index, columns with the categories to be evaluated and the measurement of the data as values.
 
-    Args:
-        tbl (pandas dataframe): pivot table using a geographic index, columns with the categories to be evaluated and the measurement of the data as values.
+def rca(tbl: pd.DataFrame):
+    """Calculates the Revealed Comparative Advantage (RCA) for a pivoted matrix.
+
+    It is important to note that even though the functions do not use a
+    parameter in relation to time, the data used for the calculations must
+    be per period; for example working with World Exports for the year 2020.
+    Also, the index always has to be a geographic level.
+
+    Arguments:
+        tbl (pd.DataFrame) -- A pivoted table using a geographic index, columns
+            with the categories to be evaluated and the measurement of the data
+            as values.
 
     Returns:
-        rcas (pandas dataframe): RCA matrix with real values.
+        rcas (pd.DataFrame) -- RCA matrix with real values.
     """
-
     # fill missing values with zeros
     tbl = tbl.fillna(0)
 

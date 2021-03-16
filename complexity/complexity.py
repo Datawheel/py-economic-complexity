@@ -1,20 +1,41 @@
-import sys
-import numpy as np
+# -*- coding: utf-8 -*-
+
+"""Complexity Indices module
+
+Hidalgo & Hausmann (2009), calculate the Economic Complexity Indices from the
+reflections method, which is defined based on a red bipartite that contains a
+symmetric set of variables whose nodes correspond to countries and products.
+"""
+
+import logging
+
 import pandas as pd
 
-def complexity(rcas, iterations=20, drop=True):
-    """Calculates Economic Complexity Index (ECI) and Product Complexity Index (PCI) from a RCA matrix
+logger = logging.getLogger(__name__)
+
+
+def complexity(rcas: pd.DataFrame, iterations=20, drop=True):
+    """Calculates Economic Complexity Index (ECI) and Product Complexity
+    Index (PCI) from a RCA matrix.
+
+    Note that to display the resulting values, the series must be transformed
+    into a dataframe in an tidy format as shown below:
+
+        eci_value, pci_value = complexity(rca)
+        eci = eci_value.to_frame(name="ECI").reset_index()
+        pci = pci_value.to_frame(name="PCI").reset_index()
 
     Args:
-        rcas (pandas dataframe): RCA matrix.
-        iterations (int, optional): recursive calculation cutoff for kp and kc. Defaults value = 20.
-        drop (bool, optional): boolean to ensure that returns include NaN values. Defaults value = True.
+        rcas (pd.DataFrame) -- Pivotted RCA matrix.
+        iterations (int, optional) -- Limit of recursive calculations for
+            kp and kc. Default value: 20.
+        drop (bool, optional) -- Boolean to ensure that returns include NaN
+            values. Default value: True.
 
     Returns:
-        geo_complexity (pandas series): ECI
-        prod_complexity (pandas series): PCI
+        ((pd.Series, pd.Series)) -- A tuple of ECI and PCI values.
     """
-    #Binarize rca input 
+    # Binarize rca input
     rcas = rcas.copy()
     rcas[rcas >= 1] = 1
     rcas[rcas < 1] = 0
@@ -24,14 +45,13 @@ def complexity(rcas, iterations=20, drop=True):
     rcas_clone = rcas_clone.dropna(how="all")
     rcas_clone = rcas_clone.dropna(how="all", axis=1)
 
-
     if rcas_clone.shape != rcas.shape:
-        print("[Warning] RCAs contain columns or rows that are entirely comprised of NaN values.")
+        logger.warning("RCAs contain columns or rows that are entirely comprised of NaN values.")
     if drop:
         rcas = rcas_clone
 
     kp = rcas.sum(axis=0) #sum columns
-    kc = rcas.sum(axis=1) #sum rows 
+    kc = rcas.sum(axis=1) #sum rows
     kp0 = kp.copy()
     kc0 = kc.copy()
 
