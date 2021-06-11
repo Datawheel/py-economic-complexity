@@ -105,6 +105,11 @@ def relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
 
     return densities
 
+def relative_relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
+    wcp = relatedness(rcas,proximities)
+    wcp_mean =  wcp.mean(axis=1)
+    wcp_std =  wcp.std(axis=1)
+    return relatedness.transform(lambda x: (x-wcp_mean)/wcp_std)
 
 def distance(rcas: pd.DataFrame, proximities: pd.DataFrame):
     """Calculates the distance.
