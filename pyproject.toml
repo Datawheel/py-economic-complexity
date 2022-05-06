@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "economic-complexity"
+version = "0.1.0"
+description = "Functions to compute Economic Complexity measures."
+authors = [
+  "Jelmy Hermosilla <jelmy@datawheel.us>",
+  "Marcos Perez <marcos@datawheel.us>",
+]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7.9"
+numpy = "^1.18.0"
+pandas = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+flake8 = "^3.9.2"
+ipykernel = "^6.0.3"
+pytest-cov = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

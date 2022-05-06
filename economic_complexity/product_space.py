@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Product Space module
 """
 
 import pandas as pd
+import numpy as np
 
 
 def proximity(rcas: pd.DataFrame, procedure="max"):
@@ -40,7 +39,7 @@ def proximity(rcas: pd.DataFrame, procedure="max"):
 
     # kp0 is a vector of the number of munics with RCA in the given product
     kp0 = rcas.sum(axis=0)
-    kp0 = kp0.values.reshape((1, len(kp0)))
+    kp0 = kp0.to_numpy().reshape((1, len(kp0)))
 
     # transpose this to get the unions
     kp0_trans = kp0.T

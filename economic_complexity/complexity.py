@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Complexity Indices module
 
 Hidalgo & Hausmann (2009), calculate the Economic Complexity Indices from the
@@ -8,13 +6,17 @@ symmetric set of variables whose nodes correspond to countries and products.
 """
 
 import logging
+from typing import Optional, Tuple
 
+import numpy.typing as nptype
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def complexity(rcas: pd.DataFrame, iterations=20, drop=True):
+def complexity(rca: nptype.NDArray,
+               iterations: int = 20,
+               drop: Optional[bool] = True) -> Tuple[pd.Series, pd.Series]:
     """Calculates Economic Complexity Index (ECI) and Product Complexity
     Index (PCI) from a RCA matrix.
 
@@ -36,7 +38,7 @@ def complexity(rcas: pd.DataFrame, iterations=20, drop=True):
         ((pd.Series, pd.Series)) -- A tuple of ECI and PCI values.
     """
     # Binarize rca input
-    rcas = rcas.copy()
+    rcas = pd.DataFrame(rca.copy())
     rcas[rcas >= 1] = 1
     rcas[rcas < 1] = 0
 

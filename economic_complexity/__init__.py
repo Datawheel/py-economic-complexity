@@ -10,3 +10,14 @@ from .cross_space import cross_proximity, cross_relatedness
 
 __version_info__ = ('0', '1', '0')
 __version__ = '.'.join(__version_info__)
+
+__all__ = (
+    "rca",
+    "complexity",
+    "distance",
+    "opportunity_gain",
+    "proximity",
+    "relatedness",
+    "cross_proximity",
+    "cross_relatedness",
+)

@@ -1,4 +1,4 @@
-# Complexity package by Datawheel
+# Economic Complexity calculations
 
 Economic Complexity studies the geography and dynamics of economic activities using methods inspired in ideas from complex systems, networks, and computer science.
 
@@ -47,4 +47,4 @@ This package contain the following modules and functions:
   - cross_relatedness
 
 Each module is documented by docstring. Write in your python IDLE the module's name and question symbol to read the documentation.
-> ex. if you import the complexity package as `import complexity as cmplx` then the command `cmplx.rca?` shows you the information about rca module)
+> ex. if you import the complexity package as `import economic_complexity as ecplx` then the command `ecplx.rca?` shows you the information about rca module)
