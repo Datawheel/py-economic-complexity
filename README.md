@@ -2,49 +2,66 @@
 
 Economic Complexity studies the geography and dynamics of economic activities using methods inspired in ideas from complex systems, networks, and computer science.
 
-This package allows to calculate Economic Complexity measures. For further references about methodology and implicances of Economic Complexity itself, you can visit [oec.world](https://oec.world/en/resources/methods#economic-complexity).
+This package allows to calculate Economic Complexity measures. For further references about methodology and implicances of Economic Complexity itself, you can visit the Observatory of Economic Complexity at [oec.world](https://oec.world/en/resources/methods#economic-complexity).
 
-## Requirements
-> used in the development 
-* python 3.8.2
-* numpy 1.18.2
-* pandas 1.1.1
+We also have [a brief Tutorial](./docs/TUTORIAL.ipynb), using data from the OEC, to get started on how to use the basic functions of this package.
 
-## Install
+<a href=""><img src="https://flat.badgen.net/github/license/Datawheel/py-economic-complexity" /></a>
+<a href=""><img src="https://flat.badgen.net/github/issues/Datawheel/py-economic-complexity" /></a>
+<a href=""><img src="https://flat.badgen.net/pypi/v/economic-complexity" /></a>
 
-After clone the repository, install the **setuptools** and **wheel** packages
-```sh
-python3 -m pip install --user --upgrade setuptools wheel
-```
+## Usage
 
-next compile the package in its directory
-```sh
-python3 setup.py sdist bdist_wheel
-```
+This package contain the following functions:
 
-Now we have two new folders in our directory **dist** and **complexity_pkg.egg-info**. **dist** folder contains a **.whl** file that is our compiled package which we will install.
-
-To install the package we have to run the follwing command:
-```sh
-pip install **some-package**.whl
-```
-
-## Functions available
-
-This package contain the following modules and functions:
-
-* rca:
-  - rca
-* complexity:
-  - complexity
-* product_space:
-  - distance
-  - opportunity_gain
-  - proximity
-  - relatedness
-* cross_space:
-  - cross_proximity
-  - cross_relatedness
+* RCA:
+  - `rca`
+* Economic/Product Complexity:
+  - `complexity`
+* Product-space:
+  - `distance`
+  - `opportunity_gain`
+  - `proximity`
+  - `relatedness`
+* Cross-space:
+  - `cross_proximity`
+  - `cross_relatedness`
 
 Each module is documented by docstring. Write in your python IDLE the module's name and question symbol to read the documentation.
 > ex. if you import the complexity package as `import economic_complexity as ecplx` then the command `ecplx.rca?` shows you the information about rca module)
+
+## Installation
+
+The `pyproject.toml` file in this repository contains settings to use with [`poetry`](https://python-poetry.org/). You can generate an installable wheel file using the `build` command:
+
+```bash
+$ poetry build --format wheel
+```
+
+The package is also available on pypi.org, under the name `economic-complexity`.
+
+```bash
+$ poetry install economic-complexity
+```
+
+## Development
+
+After cloning the repo, install the dependencies with the command:
+
+```bash
+$ poetry install
+```
+
+## References
+
+* Hidalgo, César A. (2021). Economic complexity theory and applications. _Nature Reviews Physics, 3_(2), 92–113. https://doi.org/10.1038/s42254-020-00275-1
+
+* Catalán, P., Navarrete, C., & Figueroa, F. (2020). The scientific and technological cross-space: Is technological diversification driven by scientific endogenous capacity? _Research Policy, 104016_, 104016. https://doi.org/10.1016/j.respol.2020.104016
+
+* Hidalgo, César A., & Hausmann, R. (2009). The building blocks of economic complexity. _Proceedings of the National Academy of Sciences of the United States of America, 106_(26), 10570–10575. https://doi.org/10.1073/pnas.0900943106
+
+* Hidalgo, C. A., Klinger, B., Barabási, A.-L., & Hausmann, R. (2007). The product space conditions the development of nations. _Science (New York, N.Y.), 317_(5837), 482–487. https://doi.org/10.1126/science.1144581
+
+---
+&copy; 2022 [Datawheel, LLC.](https://www.datawheel.us/)  
+This project is licensed under [MIT](./LICENSE).

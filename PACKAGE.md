@@ -1,17 +1,17 @@
 This package contains functions to calculate Economic Complexity indicators.  
-The functions use data in `pandas.DataFrame` objects.
+The functions handle the data through `pandas.DataFrame` objects.
 
-<a href="https://github.com/Datawheel/tesseract-python">
-  <img src="https://flat.badgen.net/github/release/Datawheel/tesseract-python" />
+<a href="https://github.com/Datawheel/py-economic-complexity">
+  <img src="https://flat.badgen.net/github/release/Datawheel/py-economic-complexity" />
 </a>
-<a href="https://github.com/Datawheel/tesseract-python/blob/master/LICENSE">
-  <img src="https://flat.badgen.net/github/license/Datawheel/tesseract-python" />
+<a href="https://github.com/Datawheel/py-economic-complexity/blob/master/LICENSE">
+  <img src="https://flat.badgen.net/github/license/Datawheel/py-economic-complexity" />
 </a>
-<a href="https://github.com/Datawheel/tesseract-python/">
-  <img src="https://flat.badgen.net/github/checks/Datawheel/tesseract-python" />
+<a href="https://github.com/Datawheel/py-economic-complexity/">
+  <img src="https://flat.badgen.net/github/checks/Datawheel/py-economic-complexity" />
 </a>
-<a href="https://github.com/Datawheel/tesseract-python/issues">
-  <img src="https://flat.badgen.net/github/issues/Datawheel/tesseract-python" />
+<a href="https://github.com/Datawheel/py-economic-complexity/issues">
+  <img src="https://flat.badgen.net/github/issues/Datawheel/py-economic-complexity" />
 </a>
 
 ## Installation
