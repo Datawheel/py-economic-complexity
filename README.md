@@ -44,10 +44,13 @@ The `pyproject.toml` file in this repository contains settings to use with [`poe
 $ poetry build --format wheel
 ```
 
-The package is also available on pypi.org, under the name `economic-complexity`.
+The package is also available on pypi.org, under the name `economic-complexity`. You can install it using `poetry` or `pip`.
 
 ```bash
 $ poetry install economic-complexity
+```
+```bash
+$ pip install economic-complexity
 ```
 
 ## Development
