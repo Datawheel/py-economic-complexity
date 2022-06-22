@@ -1,13 +1,17 @@
 [tool.poetry]
 name = "economic-complexity"
-version = "0.1.0"
+version = "0.1.1"
 description = "Functions to calculate Economic Complexity indicators."
 authors = [
   "Jelmy Hermosilla <jelmy@datawheel.us>",
   "Marcos Perez <marcos@datawheel.us>",
 ]
+maintainers = [
+  "Francisco Abarzua <francisco@datawheel.us>",
+]
 license = "MIT"
 readme = "PACKAGE.md"
+repository = "https://github.com/Datawheel/py-economic-complexity"
 
 [tool.poetry.dependencies]
 python = "^3.7"
