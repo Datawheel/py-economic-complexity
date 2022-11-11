@@ -5,10 +5,10 @@ This module contains functions to ease the calculation of Economic Complexity va
 
 from .rca import rca
 from .complexity import complexity
-from .product_space import distance, opportunity_gain, proximity, relatedness
+from .product_space import distance, opportunity_gain, proximity, relatedness, similarity, pgi, peii
 from .cross_space import cross_proximity, cross_relatedness
 
-__version_info__ = ('0', '1', '0')
+__version_info__ = ('0', '1', '1')
 __version__ = '.'.join(__version_info__)
 
 __all__ = (
@@ -20,4 +20,6 @@ __all__ = (
     "relatedness",
     "cross_proximity",
     "cross_relatedness",
+    "pgi",
+    "peii"
 )
