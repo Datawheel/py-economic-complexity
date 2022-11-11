@@ -185,7 +185,7 @@ def similarity(rcas: pd.DataFrame):
     return scc
 
 
-def pmi(tbl: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataFrame:
+def pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataFrame:
     """
     Calculates the Product 'measure' Index, where measure corresponds to a dataframe with the measure values for each geography.
     For example, in the literature this method has been applied to calculate the Product Gini Index (PGI) and the Product Emission Intensity Index.
@@ -206,7 +206,6 @@ def pmi(tbl: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataF
     measure = measure.fillna(value=0)
     
     # get Mcp matrix
-    rcas = ec.rca(tbl)
     m = rcas.copy()
     m[rcas >= 1] = 1
     m[rcas < 1] = 0
@@ -232,10 +231,53 @@ def pmi(tbl: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataF
     normp = m.multiply(scp).sum(axis=0)
     normp = pd.DataFrame(normp)
     
-    # get PEII array
     num = m.multiply(scp).T.dot(measure)
     
     pmi = np.divide(num, normp)
     pmi.rename(columns={pmi.columns[0]: measure_name}, inplace=True)
     
     return pmi
+
+def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFrame:
+
+    """Calculates the Product Gini Index (PGI) for a pivoted matrix.
+    It is important to note that even though the functions do not use a
+    parameter in relation to time, the data used for the calculations must
+    be per period; for example working with World Exports for the year 2020.
+    Also, the index always has to be a geographic level.
+    It is also important to make sure that the input matrices are aligned, 
+    that is, that both matrices consider the same geographic units.
+    Arguments:
+        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
+            columns with the categories to be evaluated and the measurement of
+            the data as values.
+        gini (pandas.DataFrame) -- A matrix of GINI indices using a geographic index.
+    Returns:
+        (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
+    """
+
+    pgip = pmi(tbl = tbl, rcas = rcas, measure = gini, measure_name='pgi')
+
+    return pgip
+
+def peii(tbl: pd.DataFrame, rcas: pd.DataFrame, emissions: pd.DataFrame) -> pd.DataFrame:
+
+    """
+    Calculates the Product Emissions Intensity Index (PEII) for a pivoted matrix.
+    It is important to note that even though the functions do not use a
+    parameter in relation to time, the data used for the calculations must
+    be per period; for example working with World Exports for the year 2020.
+    Also, the index always has to be a geographic level.
+    It is also important to make sure that the input matrices are aligned, 
+    that is, that both matrices consider the same geographic units.
+    Arguments:
+        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
+            columns with the categories to be evaluated and the measurement of
+            the data as values.
+        emissions (pandas.DataFrame) -- A matrix of emissions intensity using a geographic index.
+    Returns:
+        (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
+    """
+
+    peii = pmi(tbl = tbl, rcas = rcas, measure=emissions, measure_name='peii')
+    return peii
