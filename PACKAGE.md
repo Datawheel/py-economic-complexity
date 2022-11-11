@@ -31,6 +31,12 @@ More complex functions use the resulting dataframes of the basic functions as ar
 
 * Hidalgo, C. A., Klinger, B., Barabási, A.-L., & Hausmann, R. (2007). The product space conditions the development of nations. _Science (New York, N.Y.), 317_(5837), 482–487. https://doi.org/10.1126/science.1144581
 
+* Hartmann, D., Guevara, M. R., Jara-Figueroa, C., Aristarán, M., & Hidalgo, C. A. (2017). Linking Economic Complexity, Institutions, and Income Inequality. _World Development_, 93, 75–93. https://doi.org/10.1016/j.worlddev.2016.12.020
+
+* Romero, J. P., & Gramkow, C. (2021). Economic complexity and greenhouse gas emissions. _World Development_, 139, 105317. https://doi.org/10.1016/j.worlddev.2020.105317
+
+* Bahar, D., Hausmann, R., Hidalgo, C. A. (2014). Neighbors and the evolution of the comparative advantage of nations: Evidence of international knowledge diffusion?. _Journal of International Economics_, 92, 111-123. http://dx.doi.org/10.1016/j.jinteco.2013.11.001
+
 ---
 &copy; 2022 [Datawheel, LLC.](https://www.datawheel.us/)  
 This project is licensed under [MIT](./LICENSE).
