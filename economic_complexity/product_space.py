@@ -158,3 +158,126 @@ def opportunity_gain(rcas: pd.DataFrame, proximities: pd.DataFrame, pci: pd.Data
     opp_gain = middle.dot(prox_ratio) - right
 
     return opp_gain
+
+
+def similarity(rcas: pd.DataFrame):    
+    """
+    Calculates the Export Similarity Index for a matrix of RCAs.
+
+    Bahar et al. (2014) introduces this measure of similarity in the export structure of a pair of countries c and c'. It's defined as the Pearson correlation between the logarithm of the RCA vectors of the two countries.
+    
+    This function only needs the pivot table obtained from the RCA function,
+    and returns a square matrix with the Export Similarity Index between the elements.
+
+    Args:
+        rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
+
+    Returns:
+        (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
+    """
+
+    # Take the log of rcas (add 0.1 as \epsilon)
+    rcas = np.log(rcas + 0.1)
+
+    # calculate the matrix through the pearson correlation
+    scc = pd.DataFrame(np.corrcoef(rcas), columns=rcas.index, index = rcas.index)
+
+    return scc
+
+
+def pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataFrame:
+    """
+    Calculates the Product 'measure' Index, where measure corresponds to a dataframe with the measure values for each geography.
+    For example, in the literature this method has been applied to calculate the Product Gini Index (PGI) and the Product Emission Intensity Index.
+
+    Args:
+        tbl (pd.DataFrame) -- A pivoted table using a geographic index,
+            columns with the categories to be evaluated and the measurement of
+            the data as values.
+        measure (pd.DataFrame) -- A table using a geographic index, with a single column with the measure values.
+        measure_name (str) -- A string with the name of the measure
+
+    Returns:
+        (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
+
+    """
+    # drop product with no exports and fill missing values with zeros
+    tbl = tbl.dropna(how="all", axis=1).fillna(value=0)
+    measure = measure.fillna(value=0)
+    
+    # get Mcp matrix
+    m = rcas.copy()
+    m[rcas >= 1] = 1
+    m[rcas < 1] = 0
+    
+    # Ensures that the matrices are aligned by removing geographies that don't exist in both matrices
+    tbl_geo = tbl.index
+    measure_geo = measure.index
+    intersection_geo = list(set(tbl_geo) & set(measure_geo))
+    tbl = tbl.filter(items=intersection_geo, axis=0)
+    measure = measure.filter(items=intersection_geo, axis=0)
+    m = m.filter(items=intersection_geo, axis=0)
+
+    tbl = tbl.sort_index(ascending=True)
+    measure = measure.sort_index(ascending=True)
+    m = m.sort_index(ascending=True)
+    
+    # get Scp matrix
+    col_sums = tbl.sum(axis=1)
+    col_sums = col_sums.to_numpy().reshape((len(col_sums), 1))
+    scp = np.divide(tbl, col_sums)
+    
+    # get Np array
+    normp = m.multiply(scp).sum(axis=0)
+    normp = pd.DataFrame(normp)
+    
+    num = m.multiply(scp).T.dot(measure)
+    
+    pmi = np.divide(num, normp)
+    pmi.rename(columns={pmi.columns[0]: measure_name}, inplace=True)
+    
+    return pmi
+
+def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFrame:
+
+    """Calculates the Product Gini Index (PGI) for a pivoted matrix.
+    It is important to note that even though the functions do not use a
+    parameter in relation to time, the data used for the calculations must
+    be per period; for example working with World Exports for the year 2020.
+    Also, the index always has to be a geographic level.
+    It is also important to make sure that the input matrices are aligned, 
+    that is, that both matrices consider the same geographic units.
+    Arguments:
+        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
+            columns with the categories to be evaluated and the measurement of
+            the data as values.
+        gini (pandas.DataFrame) -- A matrix of GINI indices using a geographic index.
+    Returns:
+        (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
+    """
+
+    pgip = pmi(tbl = tbl, rcas = rcas, measure = gini, measure_name='pgi')
+
+    return pgip
+
+def peii(tbl: pd.DataFrame, rcas: pd.DataFrame, emissions: pd.DataFrame) -> pd.DataFrame:
+
+    """
+    Calculates the Product Emissions Intensity Index (PEII) for a pivoted matrix.
+    It is important to note that even though the functions do not use a
+    parameter in relation to time, the data used for the calculations must
+    be per period; for example working with World Exports for the year 2020.
+    Also, the index always has to be a geographic level.
+    It is also important to make sure that the input matrices are aligned, 
+    that is, that both matrices consider the same geographic units.
+    Arguments:
+        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
+            columns with the categories to be evaluated and the measurement of
+            the data as values.
+        emissions (pandas.DataFrame) -- A matrix of emissions intensity using a geographic index.
+    Returns:
+        (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
+    """
+
+    peii = pmi(tbl = tbl, rcas = rcas, measure=emissions, measure_name='peii')
+    return peii
