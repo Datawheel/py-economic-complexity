@@ -7,11 +7,10 @@ and their comparative advantages in relation to the level of world exports
 """
 
 import numpy as np
-import numpy.typing as nptype
 import pandas as pd
 
 
-def rca(tbl: pd.DataFrame) -> nptype.NDArray:
+def rca(tbl: pd.DataFrame) -> pd.DataFrame:
     """Calculates the Revealed Comparative Advantage (RCA) for a pivoted matrix.
 
     It is important to note that even though the functions do not use a
@@ -25,7 +24,7 @@ def rca(tbl: pd.DataFrame) -> nptype.NDArray:
             the data as values.
 
     Returns:
-        (numpy.ndarray) -- RCA matrix with real values.
+        (pandas.DataFrame) -- RCA matrix with real values.
     """
     # fill missing values with zeros
     tbl = tbl.fillna(value=0)

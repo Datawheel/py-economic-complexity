@@ -8,13 +8,12 @@ symmetric set of variables whose nodes correspond to countries and products.
 import logging
 from typing import Optional, Tuple
 
-import numpy.typing as nptype
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def complexity(rca: nptype.NDArray,
+def complexity(rca: pd.DataFrame,
                iterations: int = 20,
                drop: Optional[bool] = True) -> Tuple[pd.Series, pd.Series]:
     """Calculates Economic Complexity Index (ECI) and Product Complexity

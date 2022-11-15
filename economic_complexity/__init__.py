@@ -20,6 +20,7 @@ __all__ = (
     "relatedness",
     "cross_proximity",
     "cross_relatedness",
+    "similarity",
     "pgi",
-    "peii"
+    "peii",
 )

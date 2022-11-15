@@ -160,12 +160,12 @@ def opportunity_gain(rcas: pd.DataFrame, proximities: pd.DataFrame, pci: pd.Data
     return opp_gain
 
 
-def similarity(rcas: pd.DataFrame):    
+def similarity(rcas: pd.DataFrame):
     """
     Calculates the Export Similarity Index for a matrix of RCAs.
 
     Bahar et al. (2014) introduces this measure of similarity in the export structure of a pair of countries c and c'. It's defined as the Pearson correlation between the logarithm of the RCA vectors of the two countries.
-    
+
     This function only needs the pivot table obtained from the RCA function,
     and returns a square matrix with the Export Similarity Index between the elements.
 
@@ -204,12 +204,12 @@ def pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_na
     # drop product with no exports and fill missing values with zeros
     tbl = tbl.dropna(how="all", axis=1).fillna(value=0)
     measure = measure.fillna(value=0)
-    
+
     # get Mcp matrix
     m = rcas.copy()
     m[rcas >= 1] = 1
     m[rcas < 1] = 0
-    
+
     # Ensures that the matrices are aligned by removing geographies that don't exist in both matrices
     tbl_geo = tbl.index
     measure_geo = measure.index
@@ -221,21 +221,21 @@ def pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_na
     tbl = tbl.sort_index(ascending=True)
     measure = measure.sort_index(ascending=True)
     m = m.sort_index(ascending=True)
-    
+
     # get Scp matrix
     col_sums = tbl.sum(axis=1)
     col_sums = col_sums.to_numpy().reshape((len(col_sums), 1))
     scp = np.divide(tbl, col_sums)
-    
+
     # get Np array
     normp = m.multiply(scp).sum(axis=0)
     normp = pd.DataFrame(normp)
-    
+
     num = m.multiply(scp).T.dot(measure)
-    
+
     pmi = np.divide(num, normp)
     pmi.rename(columns={pmi.columns[0]: measure_name}, inplace=True)
-    
+
     return pmi
 
 def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFrame:
@@ -245,7 +245,7 @@ def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFra
     parameter in relation to time, the data used for the calculations must
     be per period; for example working with World Exports for the year 2020.
     Also, the index always has to be a geographic level.
-    It is also important to make sure that the input matrices are aligned, 
+    It is also important to make sure that the input matrices are aligned,
     that is, that both matrices consider the same geographic units.
     Arguments:
         tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
@@ -268,7 +268,7 @@ def peii(tbl: pd.DataFrame, rcas: pd.DataFrame, emissions: pd.DataFrame) -> pd.D
     parameter in relation to time, the data used for the calculations must
     be per period; for example working with World Exports for the year 2020.
     Also, the index always has to be a geographic level.
-    It is also important to make sure that the input matrices are aligned, 
+    It is also important to make sure that the input matrices are aligned,
     that is, that both matrices consider the same geographic units.
     Arguments:
         tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
