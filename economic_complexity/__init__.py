@@ -8,7 +8,7 @@ from .complexity import complexity
 from .product_space import distance, opportunity_gain, proximity, relatedness, similarity, pgi, peii
 from .cross_space import cross_proximity, cross_relatedness
 
-__version_info__ = ('0', '1', '1')
+__version_info__ = ('0', '1', '2')
 __version__ = '.'.join(__version_info__)
 
 __all__ = (
