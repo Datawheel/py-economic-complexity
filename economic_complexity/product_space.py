@@ -233,7 +233,7 @@ def pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_na
 
     num = m.multiply(scp).T.dot(measure)
 
-    pmi = np.divide(num, normp)
+    pmi = np.divide(num, np.asarray(normp))
     pmi.rename(columns={pmi.columns[0]: measure_name}, inplace=True)
 
     return pmi
