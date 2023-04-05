@@ -185,7 +185,7 @@ def similarity(rcas: pd.DataFrame):
     return scc
 
 
-def pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataFrame:
+def _pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataFrame:
     """
     Calculates the Product 'measure' Index, where measure corresponds to a dataframe with the measure values for each geography.
     For example, in the literature this method has been applied to calculate the Product Gini Index (PGI) and the Product Emission Intensity Index.
@@ -256,7 +256,7 @@ def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFra
         (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
     """
 
-    pgip = pmi(tbl = tbl, rcas = rcas, measure = gini, measure_name='pgi')
+    pgip = _pmi(tbl = tbl, rcas = rcas, measure = gini, measure_name='pgi')
 
     return pgip
 
@@ -279,5 +279,5 @@ def peii(tbl: pd.DataFrame, rcas: pd.DataFrame, emissions: pd.DataFrame) -> pd.D
         (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
     """
 
-    peii = pmi(tbl = tbl, rcas = rcas, measure=emissions, measure_name='peii')
+    peii = _pmi(tbl = tbl, rcas = rcas, measure=emissions, measure_name='peii')
     return peii
