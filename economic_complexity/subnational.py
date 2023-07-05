@@ -8,14 +8,14 @@ import pandas as pd
 def complexity_subnational(
     rcas: pd.DataFrame,
     pci_external: pd.Series,
-    standarize: Optional[bool]=False,
+    standardize: Optional[bool]=False,
 ) -> Tuple[pd.Series, pd.Series]:
     """
     Calculates the Economic Complexity Index for the subnational (AKA external method). Here a RCA matrix and an external Product Complexity is used.
     Args:
         rcas (pd.DataFrame) -- Pivotted RCA matrix.
         pci_external (pd.Series) -- PCI values from an external source.
-        standarize (bool, optional) -- Boolean value to choose if the ECI vector is standarized: x-µ/σ. Default value: False.
+        standardize (bool, optional) -- Boolean value to choose if the ECI vector is standardize: x-µ/σ. Default value: False.
 
 
     Returns:
@@ -55,7 +55,7 @@ def complexity_subnational(
         # Append the ECI value to the eci_external DataFrame
         eci_external = pd.concat([eci_external, pd.Series({index:eci})], axis=0, ignore_index=False)
     
-    if standarize == True:
+    if standardize == True:
         # Standardize the ECI values by subtracting the mean and dividing by the standard deviation
         eci_external = (eci_external-eci_external.mean())/eci_external.std()
 
