@@ -15,7 +15,7 @@ def complexity_subnational(
     Args:
         rcas (pd.DataFrame) -- Pivotted RCA matrix.
         pci_external (pd.Series) -- PCI values from an external source.
-        standardize (bool, optional) -- Boolean value to choose if the ECI vector is standardize: x-µ/σ. Default value: False.
+        standardize (bool, optional) -- Boolean value to choose if the ECI vector is standardized: x-µ/σ. Default value: False.
 
 
     Returns:
