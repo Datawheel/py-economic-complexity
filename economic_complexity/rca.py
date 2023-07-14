@@ -6,11 +6,15 @@ and their comparative advantages in relation to the level of world exports
 (Hidalgo et al., 2007).
 """
 
-import numpy as np
-import pandas as pd
+import polars as pl
 
-
-def rca(tbl: pd.DataFrame) -> pd.DataFrame:
+def rca(
+        lf: pl.LazyFrame,
+        *,
+        activity: str,
+        location: str,
+        measure: str,
+    ) -> pl.LazyFrame:
     """Calculates the Revealed Comparative Advantage (RCA) for a pivoted matrix.
 
     It is important to note that even though the functions do not use a
@@ -19,24 +23,43 @@ def rca(tbl: pd.DataFrame) -> pd.DataFrame:
     Also, the index always has to be a geographic level.
 
     Arguments:
-        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
+        lf (polars.Lazyframe) -- A pivoted table using a geographic index,
             columns with the categories to be evaluated and the measurement of
             the data as values.
+        
 
     Returns:
-        (pandas.DataFrame) -- RCA matrix with real values.
+        (polars.Lazyframe) -- RCA matrix with real values.
     """
-    # fill missing values with zeros
-    tbl = tbl.fillna(value=0)
+    lf = lf.fill_nan(0).fill_null(0)
 
-    col_sums = tbl.sum(axis=1) # 1:columns
-    col_sums = col_sums.to_numpy().reshape((len(col_sums), 1))
+    # Calculate sum of measure per activity
+    total_activity = lf.groupby(by=activity).agg(
+        pl.sum(measure).alias("_sum_by_activity")
+    )
 
-    rca_numerator = np.divide(tbl, col_sums)
-    row_sums = tbl.sum(axis=0) # 0:index
+    # Calculate sum of measure per location
+    total_location = lf.groupby(by=location).agg(
+        pl.sum(measure).alias("_sum_by_location")
+    )
 
-    total_sum = tbl.sum().sum()
-    rca_denominator = row_sums / total_sum
-    rcas = rca_numerator / rca_denominator
+    # Merge sums of measure per activity and per location
+    merged = lf.join(total_activity, on=activity).join(total_location, on=location)
 
-    return rcas
+    # Calculate the total sum of the measure
+    total_measure = total_activity.select(
+        pl.col("_sum_by_activity").alias("_total_measure_sum")
+    ).sum()
+
+    # Build the expression for the column division that calculates the RCA
+    rca_expr = (
+        (pl.col(measure) / pl.col("_sum_by_location"))
+        / (pl.col("_sum_by_activity") / pl.first("_total_measure_sum"))
+    )
+    # Do the calculation
+    rca = merged\
+        .with_context(total_measure)\
+        .with_columns(rca_expr.alias(measure + " RCA"))\
+        .drop(["_sum_by_activity", "_sum_by_location"])
+
+    return rca
