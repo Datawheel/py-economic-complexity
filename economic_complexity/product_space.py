@@ -22,15 +22,22 @@ def proximity(rcas: pl.DataFrame, procedure="max"):
             Available options are "sqrt" and "max", defaults to "max".
 
     Returns:
-        (pl.DataFrame) -- A square matrix with the proximity between the elements.
+        (np.ndarray) -- A square matrix with the proximity between the elements.
     """
     rcas = rcas.to_numpy()
 
+    # Matrix multiplication on M_mi matrix and transposed version,
+    # number of products = number of rows and vice versa on transposed
+    # version, thus the shape of this result will be length of products
+    # by the length of products (symetric)
     numerator_intersection = rcas.transpose().dot(rcas)
 
+    # kp0 is a vector of the number of munics with RCA in the given product
     kp0 = rcas.sum(axis=0)
     kp0_trans = kp0.reshape((len(kp0), 1))
 
+    # multiply these two vectors, take the squre root
+    # and then we have the denominator
     if procedure == "sqrt":
         # get square root for geometric mean
         denominator_union = kp0_trans.dot(kp0)
