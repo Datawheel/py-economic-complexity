@@ -54,7 +54,7 @@ def proximity(rcas: pl.DataFrame, procedure="max"):
     return phi
 
 
-def relatedness(rcas: pl.DataFrame, proximities: np.ndarray):
+def relatedness(rcas: pl.DataFrame, proximities: np.ndarray, location: str):
     """Calculates the Relatedness, given a matrix of RCAs for the economic
     activities of a location, and a matrix of Proximities.
 
@@ -77,7 +77,10 @@ def relatedness(rcas: pl.DataFrame, proximities: np.ndarray):
         (np.ndarray) -- A matrix with the probability that a location
             generates comparative advantages in a economic activity.
     """
-    rcas = rcas.to_numpy()
+    # Save index
+    index_col = rcas[location]
+    headers = rcas.columns[1:]
+    rcas = rcas.drop(location).to_numpy()
 
     # Get numerator by matrix multiplication of proximities with M_im
     density_numerator = rcas.dot(proximities)
@@ -90,6 +93,9 @@ def relatedness(rcas: pl.DataFrame, proximities: np.ndarray):
 
     # We now have our densities matrix by dividing numerator by denomiator
     densities = density_numerator / density_denominator
+
+    densities = pl.DataFrame(densities, schema=headers)
+    densities = densities.with_columns(pl.Series(name=location, values=index_col))
 
     return densities
 

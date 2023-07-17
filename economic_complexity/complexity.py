@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 def complexity(rca: pl.DataFrame,
-               index: str,
-               iterations: int = 20) -> Tuple[pl.Series, pl.Series]:
+               location: str,
+               activity: str,
+               iterations: int = 20) -> Tuple[pl.DataFrame, pl.DataFrame]:
     """Calculates Economic Complexity Index (ECI) and Product Complexity
     Index (PCI) from a RCA matrix.
 
@@ -26,11 +27,11 @@ def complexity(rca: pl.DataFrame,
             kp and kc. Default value: 20.
 
     Returns:
-        ((pl.Series, pl.Series)) -- A tuple of ECI and PCI values.
+        ((pl.DataFrame, pl.DataFrame)) -- A tuple of ECI and PCI values.
     """
 
-    kp = rca.select(pl.all().exclude(index)).sum().transpose().to_series()
-    kc = rca.select(pl.all().exclude(index)).sum(axis=1)
+    kp = rca.select(pl.all().exclude(location)).sum().transpose().to_series()
+    kc = rca.select(pl.all().exclude(location)).sum(axis=1)
 
     kp0 = kp.clone()
     kc0 = kc.clone()
@@ -39,12 +40,19 @@ def complexity(rca: pl.DataFrame,
         kc_temp = kc.clone()
         kp_temp = kp.clone()
 
-        kp = (rca.select(pl.all().exclude(index)) * kc_temp).sum().transpose().to_series() / kp0
+        kp = (rca.select(pl.all().exclude(location)) * kc_temp).sum().transpose().to_series() / kp0
         
         if i < (iterations - 1):
-            kc = (rca.select(pl.all().exclude(index)).transpose() * kp_temp).sum().transpose().to_series() / kc0
+            kc = (rca.select(pl.all().exclude(location)).transpose() * kp_temp).sum().transpose().to_series() / kc0
 
     geo_complexity = (kc - kc.mean()) / kc.std()
     prod_complexity = (kp - kp.mean()) / kp.std()
+
+    # IDs column
+    geo_complexity = pl.DataFrame([pl.Series("ECI", geo_complexity),
+                                   pl.Series(location, rca[location])])
+
+    prod_complexity = pl.DataFrame([pl.Series("PCI", prod_complexity),
+                                    pl.Series(activity, rca.columns[1:])])
 
     return geo_complexity, prod_complexity
