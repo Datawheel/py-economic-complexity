@@ -14,7 +14,8 @@ def rca(
         activity: str,
         location: str,
         measure: str,
-        binary=False
+        binary=False,
+        cutoff=1.0
     ) -> pl.DataFrame:
     """Calculates the Revealed Comparative Advantage (RCA) for a pivoted matrix.
 
@@ -27,7 +28,7 @@ def rca(
         lf (polars.Lazyframe) -- A table using a geographic index,
             columns with the categories to be evaluated and the measurement of
             the data as values.
-        binary: binarize RCA values to 1 if RCA >= 1 or 0 in other case
+        binary: binarize RCA values to 1 if RCA >= cutoff or 0 in other case
         
     Returns:
         (polars.DataFrame) -- RCA matrix with real values.
@@ -65,7 +66,7 @@ def rca(
     
     if binary:
         rca = rca.with_columns([
-            pl.when(pl.col(measure + " RCA") >= 1).then(1.0).otherwise(0.0).alias(measure + " RCA")
+            pl.when(pl.col(measure + " RCA") >= cutoff).then(1.0).otherwise(0.0).alias(measure + " RCA")
         ])
 
     return rca.collect()
