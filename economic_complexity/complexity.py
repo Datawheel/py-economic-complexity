@@ -49,10 +49,10 @@ def complexity(rca: pl.DataFrame,
     prod_complexity = (kp - kp.mean()) / kp.std()
 
     # IDs column
-    geo_complexity = pl.DataFrame([pl.Series("ECI", geo_complexity),
+    geo_complexity = pl.DataFrame([pl.Series("Trade Value ECI", geo_complexity),
                                    pl.Series(location, rca[location])])
 
-    prod_complexity = pl.DataFrame([pl.Series("PCI", prod_complexity),
+    prod_complexity = pl.DataFrame([pl.Series("Trade Value PCI", prod_complexity),
                                     pl.Series(activity, rca.columns[1:])])
 
     return geo_complexity, prod_complexity
