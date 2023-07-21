@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 def complexity(rca: pl.DataFrame,
                location: str,
                activity: str,
+               measure: str,
                iterations: int = 20) -> Tuple[pl.DataFrame, pl.DataFrame]:
     """Calculates Economic Complexity Index (ECI) and Product Complexity
     Index (PCI) from a RCA matrix.
@@ -49,10 +50,10 @@ def complexity(rca: pl.DataFrame,
     prod_complexity = (kp - kp.mean()) / kp.std()
 
     # IDs column
-    geo_complexity = pl.DataFrame([pl.Series("Trade Value ECI", geo_complexity),
+    geo_complexity = pl.DataFrame([pl.Series(f"{measure} ECI", geo_complexity),
                                    pl.Series(location, rca[location])])
 
-    prod_complexity = pl.DataFrame([pl.Series("Trade Value PCI", prod_complexity),
+    prod_complexity = pl.DataFrame([pl.Series(f"{measure} PCI", prod_complexity),
                                     pl.Series(activity, rca.columns[1:])])
 
     return geo_complexity, prod_complexity
