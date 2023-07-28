@@ -5,6 +5,7 @@ description = "Functions to calculate Economic Complexity indicators."
 authors = [
   "Jelmy Hermosilla <jelmy@datawheel.us>",
   "Nicolas Netz <nicolas.netz@datawheel.us>",
+  "Samuel Osorio <samuel@datawheel.us>",
   "Marcos Perez <marcos@datawheel.us>",
 ]
 maintainers = [
@@ -18,12 +19,11 @@ repository = "https://github.com/Datawheel/py-economic-complexity"
 python = "^3.8"
 numpy = "^1.24.0"
 pandas = "^1.1.0"
-polars = "^0.18.4"
+polars = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.25.0"
 pytest = "^7.4.0"
-polars = "^0.18.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
