@@ -59,10 +59,10 @@ $ pip install economic-complexity
 
 ## Development
 
-After cloning the repo, install the dependencies with the command:
+The package currently declares optional dependency on pandas and polars, though we intend to move to polars completely. For development it is suggested you install all extras:
 
 ```bash
-$ poetry install
+$ poetry install --all-extras
 ```
 
 ## References
