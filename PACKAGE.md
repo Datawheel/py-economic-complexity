@@ -16,6 +16,14 @@ We recommend the use of `poetry`, to resolve the best version of the dependencie
 $ poetry add economic-complexity
 ```
 
+For the time being the library is compatible with both pandas and polars, though we intend to migrate to polars completely. Specify the package you want to use as backend as an extra at installation:
+
+```bash
+$ poetry add economic-complexity[pandas]
+$ # or
+$ poetry add economic-complexity[polars]
+```
+
 ## Tutorial
 
 We have [a brief Tutorial](https://github.com/Datawheel/py-economic-complexity/blob/main/docs/TUTORIAL.ipynb), using data from the Observatory of Economic Complexity, to get started on how to use the basic functions of this package.  

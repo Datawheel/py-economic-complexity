@@ -452,7 +452,7 @@ files = [
 name = "pandas"
 version = "1.5.3"
 description = "Powerful data structures for data analysis, time series, and statistics"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "pandas-1.5.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3749077d86e3a2f0ed51367f30bf5b82e131cc0f14260c4d3e499186fccc4406"},
@@ -570,7 +570,7 @@ testing = ["pytest", "pytest-benchmark"]
 name = "polars"
 version = "0.18.9"
 description = "Blazingly fast DataFrame library"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "polars-0.18.9-cp38-abi3-macosx_10_7_x86_64.whl", hash = "sha256:d4e4d063beb6f5663ceaa53a12ab7b7a6052601e55e05b7bb2b21eac56aa369e"},
@@ -728,7 +728,7 @@ six = ">=1.5"
 name = "pytz"
 version = "2023.3"
 description = "World timezone definitions, modern and historical"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "pytz-2023.3-py2.py3-none-any.whl", hash = "sha256:a151b3abb88eda1d4e34a9814df37de2a80e301e68ba0fd856fb9b46bfbbbffb"},
@@ -960,7 +960,11 @@ files = [
 docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
+[extras]
+pandas = ["pandas"]
+polars = ["polars"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "be40eb05b92f52e5dc971187ebd528d1351e1f135bf2e371eb39b3d44132d228"
+content-hash = "ad666d356d4ce293516f6284e0043930853a129728e85a7ddc969d0cb3135088"

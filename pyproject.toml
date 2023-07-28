@@ -18,8 +18,12 @@ repository = "https://github.com/Datawheel/py-economic-complexity"
 [tool.poetry.dependencies]
 python = "^3.8"
 numpy = "^1.24.0"
-pandas = "^1.1.0"
-polars = "^0.18.0"
+pandas = {version = "^1.1.0", optional = true}
+polars = {version = "^0.18.0", optional = true}
+
+[tool.poetry.extras]
+pandas = ["pandas"]
+polars = ["polars"]
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.25.0"
