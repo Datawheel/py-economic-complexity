@@ -9,7 +9,7 @@ from .product_space import distance, opportunity_gain, proximity, relatedness, s
 from .cross_space import cross_proximity, cross_relatedness
 from .subnational import complexity_subnational
 
-__version_info__ = ('0', '1', '3')
+__version_info__ = ('0', '1', '4')
 __version__ = '.'.join(__version_info__)
 
 __all__ = (

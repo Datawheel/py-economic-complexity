@@ -24,6 +24,7 @@ This package contain the following functions:
   - `rca`
 * Economic/Product Complexity:
   - `complexity`
+  - `complexity_subnational`
 * Product-space:
   - `distance`
   - `opportunity_gain`
