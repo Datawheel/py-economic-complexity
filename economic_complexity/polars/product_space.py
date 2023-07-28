@@ -3,9 +3,10 @@
 
 import pandas as pd
 import numpy as np
+import polars as pl
 
 
-def proximity(rcas: pd.DataFrame, procedure="max"):
+def proximity(rcas: pl.DataFrame, procedure="max"):
     """Calculates the Proximity index for a matrix of RCAs.
 
     Hidalgo et al. (2007), introduces the Proximity index which measures the
@@ -16,33 +17,24 @@ def proximity(rcas: pd.DataFrame, procedure="max"):
     and returns a square matrix with the proximity between the elements.
 
     Args:
-        rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
+        rcas (pl.DataFrame) -- A RCA matrix of pivotted values.
         procedure (str, optional) -- Determines how to calcule the denominator.
             Available options are "sqrt" and "max", defaults to "max".
 
     Returns:
-        (pd.DataFrame) -- A square matrix with the proximity between the elements.
+        (np.ndarray) -- A square matrix with the proximity between the elements.
     """
-    rcas = rcas.copy()
-    rcas[rcas >= 1] = 1
-    rcas[rcas < 1] = 0
-
-    # transpose the matrix so that it is now industries as rows
-    # and munics as columns
-    rcas_t = rcas.T.fillna(0)
+    rcas = rcas.to_numpy()
 
     # Matrix multiplication on M_mi matrix and transposed version,
     # number of products = number of rows and vice versa on transposed
     # version, thus the shape of this result will be length of products
     # by the length of products (symetric)
-    numerator_intersection = rcas_t.dot(rcas_t.T)
+    numerator_intersection = rcas.transpose().dot(rcas)
 
     # kp0 is a vector of the number of munics with RCA in the given product
     kp0 = rcas.sum(axis=0)
-    kp0 = kp0.to_numpy().reshape((1, len(kp0)))
-
-    # transpose this to get the unions
-    kp0_trans = kp0.T
+    kp0_trans = kp0.reshape((len(kp0), 1))
 
     # multiply these two vectors, take the squre root
     # and then we have the denominator
@@ -56,12 +48,13 @@ def proximity(rcas: pd.DataFrame, procedure="max"):
     # to get the proximities it is now a simple division of the untion sqrt
     # with the numerator intersections
     phi = np.divide(numerator_intersection, denominator_union)
-    np.fill_diagonal(phi.values, 0)
+
+    np.fill_diagonal(phi, 0)
 
     return phi
 
 
-def relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
+def relatedness(rcas: pl.DataFrame, proximities: np.ndarray, location: str):
     """Calculates the Relatedness, given a matrix of RCAs for the economic
     activities of a location, and a matrix of Proximities.
 
@@ -77,46 +70,48 @@ def relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
     in the future.
 
     Args:
-        rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
-        proximities (pd.DataFrame) -- Matrix with the proximity between the elements.
+        rcas (pl.DataFrame) -- Matrix of RCAs for a certain location.
+        proximities (np.ndarray) -- Matrix with the proximity between the elements.
 
     Returns:
-        (pd.DataFrame) -- A matrix with the probability that a location
+        (np.ndarray) -- A matrix with the probability that a location
             generates comparative advantages in a economic activity.
     """
-    rcas = rcas.copy()
-    rcas[rcas >= 1] = 1
-    rcas[rcas < 1] = 0
+    # Save index
+    index_col = rcas[location]
+    headers = rcas.columns[1:]
+    rcas = rcas.drop(location).to_numpy()
 
     # Get numerator by matrix multiplication of proximities with M_im
     density_numerator = rcas.dot(proximities)
 
     # Get denominator by multiplying proximities by all ones vector thus
     # getting the sum of all proximities
-    # rcas_ones = pd.DataFrame(np.ones_like(rcas))
-    rcas_ones = rcas * 0
-    rcas_ones = rcas_ones + 1
+    rcas_ones = np.ones(rcas.shape)
     # print rcas_ones.shape, proximities.shape
     density_denominator = rcas_ones.dot(proximities)
 
     # We now have our densities matrix by dividing numerator by denomiator
     densities = density_numerator / density_denominator
 
+    densities = pl.DataFrame(densities, schema=headers)
+    densities = densities.with_columns(pl.Series(name=location, values=index_col))
+
     return densities
 
 
-def distance(rcas: pd.DataFrame, proximities: pd.DataFrame):
+def distance(rcas: pl.DataFrame, proximities: pl.DataFrame):
     """Calculates the distance.
 
     In this context, the Distance for a Country and a certain Product is defined
     as the
 
     Args:
-        rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
-        proximities (pd.DataFrame) -- Matrix with the proximity between the elements.
+        rcas (pl.DataFrame) -- Matrix of RCAs for a certain location.
+        proximities (pl.DataFrame) -- Matrix with the proximity between the elements.
 
     Returns:
-        (pd.DataFrame) --
+        (pl.DataFrame) --
     """
     return 1 - relatedness(rcas, proximities)
 
