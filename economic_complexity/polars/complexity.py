@@ -5,19 +5,19 @@ reflections method, which is defined based on a red bipartite that contains a
 symmetric set of variables whose nodes correspond to countries and products.
 """
 
-import logging
 from typing import Tuple
 
 import polars as pl
 
-logger = logging.getLogger(__name__)
 
-
-def complexity(rca: pl.DataFrame,
-               location: str,
-               activity: str,
-               measure: str,
-               iterations: int = 20) -> Tuple[pl.DataFrame, pl.DataFrame]:
+def calculate_complexity(
+    rca: pl.DataFrame,
+    *,
+    activity: str,
+    location: str,
+    measure: str,
+    iterations: int = 20,
+) -> Tuple[pl.DataFrame, pl.DataFrame]:
     """Calculates Economic Complexity Index (ECI) and Product Complexity
     Index (PCI) from a RCA matrix.
 
@@ -42,7 +42,7 @@ def complexity(rca: pl.DataFrame,
         kp_temp = kp.clone()
 
         kp = (rca.select(pl.all().exclude(location)) * kc_temp).sum().transpose().to_series() / kp0
-        
+
         if i < (iterations - 1):
             kc = (rca.select(pl.all().exclude(location)).transpose() * kp_temp).sum().transpose().to_series() / kc0
 
