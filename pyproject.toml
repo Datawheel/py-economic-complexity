@@ -17,7 +17,7 @@ repository = "https://github.com/Datawheel/py-economic-complexity"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pandas = {version = "^1.5.3", optional = true}
+pandas = {version = "^1.5.0", optional = true}
 polars = {version = ">=0.18.0", optional = true}
 
 [tool.poetry.extras]
@@ -29,6 +29,7 @@ ipykernel = "^6.25.2"
 pandas = "^1.5.3"
 polars = ">=0.18.0"
 pytest = "^7.4.2"
+ruff = "^0.1.8"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
