@@ -6,53 +6,62 @@ symmetric set of variables whose nodes correspond to countries and products.
 """
 
 import logging
-from typing import Optional, Tuple
+from typing import Tuple
 
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def complexity(rca: pd.DataFrame,
-               iterations: int = 20,
-               drop: Optional[bool] = True) -> Tuple[pd.Series, pd.Series]:
+def complexity(
+    df_rca: pd.DataFrame,
+    *,
+    cutoff: float = 1,
+    drop: bool = True,
+    iterations: int = 20,
+) -> Tuple[pd.Series, pd.Series]:
     """Calculates Economic Complexity Index (ECI) and Product Complexity
     Index (PCI) from a RCA matrix.
 
     Note that to display the resulting values, the series must be transformed
     into a dataframe in an tidy format as shown below:
 
-        eci_value, pci_value = complexity(rca)
-        eci = eci_value.to_frame(name="ECI").reset_index()
-        pci = pci_value.to_frame(name="PCI").reset_index()
+    ```
+    eci_value, pci_value = complexity(rca)
+    eci = eci_value.to_frame(name="ECI").reset_index()
+    pci = pci_value.to_frame(name="PCI").reset_index()
+    ```
 
-    Args:
-        rcas (pd.DataFrame) -- Pivotted RCA matrix.
-        iterations (int, optional) -- Limit of recursive calculations for
-            kp and kc. Default value: 20.
-        drop (bool, optional) -- Boolean to ensure that returns include NaN
-            values. Default value: True.
+    ### Args:
+    df_rca (pd.DataFrame) -- Pivotted RCA matrix.
 
-    Returns:
-        ((pd.Series, pd.Series)) -- A tuple of ECI and PCI values.
+    ### Keyword Args:
+    cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+    drop (bool, optional) -- Boolean to ensure that returns include NaN values.
+        Default value: `True`.
+    iterations (int, optional) -- Limit of recursive calculations for kp and kc.
+        Default value: `20`.
+
+    ### Returns:
+    ((pd.Series, pd.Series)) -- A tuple of ECI and PCI values.
     """
-    # Binarize rca input
-    rcas = pd.DataFrame(rca.copy())
-    rcas[rcas >= 1] = 1
-    rcas[rcas < 1] = 0
+    # Binarize input RCA
+    rcas = df_rca.ge(cutoff).astype(int)
 
     # drop columns / rows only if completely nan
-    rcas_clone = rcas.copy()
+    rcas_clone = rcas.copy(deep=True)
     rcas_clone = rcas_clone.dropna(how="all")
     rcas_clone = rcas_clone.dropna(how="all", axis=1)
 
     if rcas_clone.shape != rcas.shape:
-        logger.warning("RCAs contain columns or rows that are entirely comprised of NaN values.")
+        logger.warning(
+            "RCAs contain columns or rows that are entirely comprised of NaN values."
+        )
     if drop:
         rcas = rcas_clone
 
-    kp = rcas.sum(axis=0) #sum columns
-    kc = rcas.sum(axis=1) #sum rows
+    kp = rcas.sum(axis=0)  # sum columns
+    kc = rcas.sum(axis=1)  # sum rows
     kp0 = kp.copy()
     kc0 = kc.copy()
 

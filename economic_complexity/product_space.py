@@ -1,11 +1,19 @@
 """Product Space module
 """
 
-import pandas as pd
+from typing import Optional
+
 import numpy as np
+import pandas as pd
+from typing_extensions import Literal
 
 
-def proximity(rcas: pd.DataFrame, procedure="max"):
+def proximity(
+    df_rca: pd.DataFrame,
+    *,
+    cutoff: float = 1,
+    procedure: Literal["max", "sqrt"] = "max",
+) -> pd.DataFrame:
     """Calculates the Proximity index for a matrix of RCAs.
 
     Hidalgo et al. (2007), introduces the Proximity index which measures the
@@ -15,17 +23,21 @@ def proximity(rcas: pd.DataFrame, procedure="max"):
     This function only needs the pivot table obtained from the RCA function,
     and returns a square matrix with the proximity between the elements.
 
-    Args:
-        rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
-        procedure (str, optional) -- Determines how to calcule the denominator.
-            Available options are "sqrt" and "max", defaults to "max".
+    ### Args:
+    df_rca (pd.DataFrame) -- A RCA matrix of pivotted values.
 
-    Returns:
-        (pd.DataFrame) -- A square matrix with the proximity between the elements.
+    ### Keyword Args:
+    cutoff (float, optional) -- Set the cutoff threshold value.
+        Internally, RCA values under it will be set to zero, one otherwise.
+        Default value: `1`.
+    procedure (str, optional) -- Determines how to calcule the denominator.
+        Available options are "sqrt" and "max". Default value: `"max"`.
+
+    ### Returns:
+    (pd.DataFrame) -- A square matrix with the proximity between the elements.
     """
-    rcas = rcas.copy()
-    rcas[rcas >= 1] = 1
-    rcas[rcas < 1] = 0
+    # Apply cutoff to RCA values
+    rcas = df_rca.ge(cutoff).astype(int)
 
     # transpose the matrix so that it is now industries as rows
     # and munics as columns
@@ -49,19 +61,24 @@ def proximity(rcas: pd.DataFrame, procedure="max"):
     if procedure == "sqrt":
         # get square root for geometric mean
         denominator_union = kp0_trans.dot(kp0)
-        denominator_union = np.power(denominator_union, .5)
+        denominator_union = np.power(denominator_union, 0.5)
     else:
         denominator_union = np.maximum(kp0, kp0_trans)
 
     # to get the proximities it is now a simple division of the untion sqrt
     # with the numerator intersections
-    phi = np.divide(numerator_intersection, denominator_union)
+    phi: pd.DataFrame = np.divide(numerator_intersection, denominator_union)  # type: ignore
     np.fill_diagonal(phi.values, 0)
 
     return phi
 
 
-def relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
+def relatedness(
+    df_rca: pd.DataFrame,
+    *,
+    cutoff: float = 1,
+    proximities: Optional[pd.DataFrame] = None,
+) -> pd.DataFrame:
     """Calculates the Relatedness, given a matrix of RCAs for the economic
     activities of a location, and a matrix of Proximities.
 
@@ -76,17 +93,25 @@ def relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
     to predict the probability that a region will enter or exit that activity
     in the future.
 
-    Args:
-        rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
-        proximities (pd.DataFrame) -- Matrix with the proximity between the elements.
+    ### Args:
+    rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
-    Returns:
-        (pd.DataFrame) -- A matrix with the probability that a location
-            generates comparative advantages in a economic activity.
+    ### Keyword Args:
+    cutoff (float, optional) -- Set the cutoff threshold value.
+        Internally, RCA values under it will be set to zero, one otherwise.
+        Default value: `1`.
+    proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+        If not provided, will be calculated using the "max" procedure, and
+        the same cutoff value for this call.
+
+    ### Returns:
+    (pd.DataFrame) -- A matrix with the probability that a location generates
+        comparative advantages in a economic activity.
     """
-    rcas = rcas.copy()
-    rcas[rcas >= 1] = 1
-    rcas[rcas < 1] = 0
+    if proximities is None:
+        proximities = proximity(df_rca, cutoff=cutoff)
+
+    rcas = df_rca.ge(cutoff).astype(int)
 
     # Get numerator by matrix multiplication of proximities with M_im
     density_numerator = rcas.dot(proximities)
@@ -105,37 +130,66 @@ def relatedness(rcas: pd.DataFrame, proximities: pd.DataFrame):
     return densities
 
 
-def distance(rcas: pd.DataFrame, proximities: pd.DataFrame):
+def distance(
+    df_rca: pd.DataFrame,
+    *,
+    cutoff: float = 1,
+    proximities: Optional[pd.DataFrame] = None,
+) -> pd.DataFrame:
     """Calculates the distance.
 
     In this context, the Distance for a Country and a certain Product is defined
     as the
 
-    Args:
-        rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
-        proximities (pd.DataFrame) -- Matrix with the proximity between the elements.
+    ### Args:
+    df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
-    Returns:
-        (pd.DataFrame) --
+    ### Keyword Args:
+    cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
+        This will not be used if the `proximities` matrix is provided.
+        Default value: `1`.
+    proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+        If not provided, will be calculated using the "max" procedure, and the
+        same cutoff value for this call.
+
+    ### Returns:
+    (pd.DataFrame) --
     """
-    return 1 - relatedness(rcas, proximities)
+    if proximities is None:
+        proximities = proximity(df_rca, cutoff=cutoff)
+
+    return 1 - relatedness(df_rca, proximities=proximities)
 
 
-def opportunity_gain(rcas: pd.DataFrame, proximities: pd.DataFrame, pci: pd.DataFrame):
+def opportunity_gain(
+    df_rca: pd.DataFrame,
+    *,
+    pci: pd.DataFrame,
+    cutoff: float = 1,
+    proximities: Optional[pd.DataFrame] = None,
+) -> pd.DataFrame:
     """Calculates the opportunity gain caused by the contribution of a certain
     characteristic, relative to how this affects other characteristics.
 
-    Args:
-        rcas (pd.DataFrame) -- Matrix of RCAs considering a
-        proximities (pd.DataFrame) -- [description]
-        pci (pd.DataFrame) -- [description]
+    ### Args:
+    df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
-    Returns:
-        (pd.DataFrame) --
+    ### Keyword Args:
+    pci (pd.DataFrame) -- [description]
+    cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
+        This will not be used if the `proximities` matrix is provided.
+        Default value: `1`.
+    proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+        If not provided, will be calculated using the "max" procedure, and the
+        same cutoff value for this call.
+
+    ### Returns:
+    (pd.DataFrame) --
     """
-    rcas = rcas.copy()
-    rcas[rcas >= 1] = 1
-    rcas[rcas < 1] = 0
+    if proximities is None:
+        proximities = proximity(df_rca, cutoff=cutoff)
+
+    rcas = df_rca.ge(cutoff).astype(int)
 
     # turn proximities in to ratios out of total
     prox_ratio = proximities / proximities.sum()
@@ -148,7 +202,7 @@ def opportunity_gain(rcas: pd.DataFrame, proximities: pd.DataFrame, pci: pd.Data
     middle = inverse_rcas.multiply(pci)
 
     # get the relatedness with the backwards bizzaro RCAs
-    dcp = relatedness(inverse_rcas, proximities)
+    dcp = relatedness(inverse_rcas, proximities=proximities)
     # now get the inverse
     dcp = 1 - dcp
     # we now have the right-half of the equation
@@ -160,45 +214,71 @@ def opportunity_gain(rcas: pd.DataFrame, proximities: pd.DataFrame, pci: pd.Data
     return opp_gain
 
 
-def similarity(rcas: pd.DataFrame):
+def similarity(
+    df_rca: pd.DataFrame,
+    *,
+    epsilon: float = 0.1,
+) -> pd.DataFrame:
     """
     Calculates the Export Similarity Index for a matrix of RCAs.
 
-    Bahar et al. (2014) introduces this measure of similarity in the export structure of a pair of countries c and c'. It's defined as the Pearson correlation between the logarithm of the RCA vectors of the two countries.
+    Bahar et al. (2014) introduces this measure of similarity in the export
+    structure of a pair of countries c and c'. It's defined as the Pearson
+    correlation between the logarithm of the RCA vectors of the two countries.
 
     This function only needs the pivot table obtained from the RCA function,
-    and returns a square matrix with the Export Similarity Index between the elements.
+    and returns a square matrix with the Export Similarity Index between the
+    elements.
 
-    Args:
-        rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
+    ### Args:
+    rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
 
-    Returns:
-        (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
+    ### Keyword Args:
+    epsilon (float, optional) -- A low value to prevent the calculation of logarithm to output `-Inf`. Default value: `0.1`.
+
+    ### Returns:
+    (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
     """
-
-    # Take the log of rcas (add 0.1 as \epsilon)
-    rcas = np.log(rcas + 0.1)
+    # Take the log of rcas (adding \epsilon)
+    rcas: pd.DataFrame = np.log(df_rca + epsilon)  # type: ignore
 
     # calculate the matrix through the pearson correlation
-    scc = pd.DataFrame(np.corrcoef(rcas), columns=rcas.index, index = rcas.index)
+    scc = pd.DataFrame(np.corrcoef(rcas), columns=rcas.index, index=rcas.index)
 
     return scc
 
 
-def _pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_name: str) -> pd.DataFrame:
-    """
-    Calculates the Product 'measure' Index, where measure corresponds to a dataframe with the measure values for each geography.
-    For example, in the literature this method has been applied to calculate the Product Gini Index (PGI) and the Product Emission Intensity Index.
+def _pmi(
+    tbl: pd.DataFrame,
+    rcas: pd.DataFrame,
+    measure: pd.DataFrame,
+    measure_name: str,
+    *,
+    cutoff: float = 1,
+) -> pd.DataFrame:
+    """Calculates the Product 'measure' Index.
 
-    Args:
-        tbl (pd.DataFrame) -- A pivoted table using a geographic index,
-            columns with the categories to be evaluated and the measurement of
-            the data as values.
-        measure (pd.DataFrame) -- A table using a geographic index, with a single column with the measure values.
-        measure_name (str) -- A string with the name of the measure
+    In this case 'measure' corresponds to a DataFrame with the measure values
+    for each geography.
 
-    Returns:
-        (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
+    In the literature this method has been applied to calculate the Product Gini
+    Index (PGI) and the Product Emission Intensity Index (PEII).
+
+    ### Args:
+    tbl (pd.DataFrame) -- A pivoted table using a geographic index, columns with the categories
+        to be evaluated, and the measurement of the data as values.
+    rcas (pd.DataFrame) --
+    measure (pd.DataFrame) -- A table using a geographic index, with a single column with the
+        measure values.
+    measure_name (str) -- A string with the name of the measure.
+
+    ### Keyword Args:
+    cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+        Internally, RCA values under it will be set to zero, one otherwise.
+        Default value: `1`.
+
+    ### Returns:
+    (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
 
     """
     # drop product with no exports and fill missing values with zeros
@@ -206,9 +286,7 @@ def _pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_n
     measure = measure.fillna(value=0)
 
     # get Mcp matrix
-    m = rcas.copy()
-    m[rcas >= 1] = 1
-    m[rcas < 1] = 0
+    m = rcas.ge(cutoff).astype(int)
 
     # Ensures that the matrices are aligned by removing geographies that don't exist in both matrices
     tbl_geo = tbl.index
@@ -238,8 +316,12 @@ def _pmi(tbl: pd.DataFrame, rcas: pd.DataFrame, measure: pd.DataFrame, measure_n
 
     return pmi
 
-def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFrame:
 
+def pgi(
+    tbl: pd.DataFrame,
+    rcas: pd.DataFrame,
+    gini: pd.DataFrame,
+) -> pd.DataFrame:
     """Calculates the Product Gini Index (PGI) for a pivoted matrix.
     It is important to note that even though the functions do not use a
     parameter in relation to time, the data used for the calculations must
@@ -256,12 +338,16 @@ def pgi(tbl: pd.DataFrame, rcas: pd.DataFrame, gini: pd.DataFrame) -> pd.DataFra
         (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
     """
 
-    pgip = _pmi(tbl = tbl, rcas = rcas, measure = gini, measure_name='pgi')
+    pgip = _pmi(tbl=tbl, rcas=rcas, measure=gini, measure_name="pgi")
 
     return pgip
 
-def peii(tbl: pd.DataFrame, rcas: pd.DataFrame, emissions: pd.DataFrame) -> pd.DataFrame:
 
+def peii(
+    tbl: pd.DataFrame,
+    rcas: pd.DataFrame,
+    emissions: pd.DataFrame,
+) -> pd.DataFrame:
     """
     Calculates the Product Emissions Intensity Index (PEII) for a pivoted matrix.
     It is important to note that even though the functions do not use a
@@ -279,5 +365,5 @@ def peii(tbl: pd.DataFrame, rcas: pd.DataFrame, emissions: pd.DataFrame) -> pd.D
         (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
     """
 
-    peii = _pmi(tbl = tbl, rcas = rcas, measure=emissions, measure_name='peii')
+    peii = _pmi(tbl=tbl, rcas=rcas, measure=emissions, measure_name="peii")
     return peii
