@@ -155,10 +155,7 @@ def distance(
     ### Returns:
     (pd.DataFrame) --
     """
-    if proximities is None:
-        proximities = proximity(df_rca, cutoff=cutoff)
-
-    return 1 - relatedness(df_rca, proximities=proximities)
+    return 1 - relatedness(df_rca, cutoff=cutoff, proximities=proximities)
 
 
 def opportunity_gain(
