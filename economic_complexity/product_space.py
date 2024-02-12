@@ -161,7 +161,7 @@ def distance(
 def opportunity_gain(
     df_rca: pd.DataFrame,
     *,
-    pci: pd.DataFrame,
+    pci: pd.Series,
     cutoff: float = 1,
     proximities: Optional[pd.DataFrame] = None,
 ) -> pd.DataFrame:
@@ -172,7 +172,7 @@ def opportunity_gain(
     df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
     ### Keyword Args:
-    pci (pd.DataFrame) -- [description]
+    pci (pd.Series) -- Calculated Product Complexity Index from the RCA data.
     cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
         This will not be used if the `proximities` matrix is provided.
         Default value: `1`.
@@ -308,7 +308,7 @@ def _pmi(
 
     num = m.multiply(scp).T.dot(measure)
 
-    pmi = np.divide(num, normp)
+    pmi: pd.DataFrame = np.divide(num, normp)  # type: ignore
     pmi.rename(columns={pmi.columns[0]: measure_name}, inplace=True)
 
     return pmi
@@ -318,6 +318,8 @@ def pgi(
     tbl: pd.DataFrame,
     rcas: pd.DataFrame,
     gini: pd.DataFrame,
+    *,
+    cutoff: float = 1,
 ) -> pd.DataFrame:
     """Calculates the Product Gini Index (PGI) for a pivoted matrix.
     It is important to note that even though the functions do not use a
@@ -335,7 +337,13 @@ def pgi(
         (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
     """
 
-    pgip = _pmi(tbl=tbl, rcas=rcas, measure=gini, measure_name="pgi")
+    pgip = _pmi(
+        tbl=tbl,
+        rcas=rcas,
+        measure=gini,
+        measure_name="pgi",
+        cutoff=cutoff,
+    )
 
     return pgip
 
@@ -344,6 +352,8 @@ def peii(
     tbl: pd.DataFrame,
     rcas: pd.DataFrame,
     emissions: pd.DataFrame,
+    *,
+    cutoff: float = 1,
 ) -> pd.DataFrame:
     """
     Calculates the Product Emissions Intensity Index (PEII) for a pivoted matrix.
@@ -362,5 +372,11 @@ def peii(
         (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
     """
 
-    peii = _pmi(tbl=tbl, rcas=rcas, measure=emissions, measure_name="peii")
+    peii = _pmi(
+        tbl=tbl,
+        rcas=rcas,
+        measure=emissions,
+        measure_name="peii",
+        cutoff=cutoff,
+    )
     return peii
