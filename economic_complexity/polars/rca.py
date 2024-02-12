@@ -18,7 +18,7 @@ def calculate_rca(
     location: str,
     measure: str,
     binary: bool = False,
-    cutoff: float = 1.0
+    cutoff: float = 1,
 ) -> pl.LazyFrame:
     """Calculates the Revealed Comparative Advantage (RCA) for a tidy-data formatted DataFrame.
 
@@ -93,9 +93,9 @@ def calculate_rca(
     # Apply binarization of matrix
     if binary:
         rca = rca.with_columns(
-            pl.when(pl.col(measure + " RCA") >= cutoff)\
-                .then(1.0)\
-                .otherwise(0.0)\
+            pl.when(pl.col(measure + " RCA") >= cutoff)
+                .then(1.0)
+                .otherwise(0.0)
                 .alias(measure + " RCA")
         )
 

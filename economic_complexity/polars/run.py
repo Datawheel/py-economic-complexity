@@ -1,8 +1,9 @@
 from typing import Literal, Union
+
 import polars as pl
 
-from .product_space import calculate_proximity, calculate_relatedness
 from .complexity import calculate_complexity
+from .product_space import calculate_proximity, calculate_relatedness
 from .rca import calculate_rca
 
 AvailableModel = Literal["rca", "eci", "pci", "proximity", "relatedness"]
@@ -16,30 +17,33 @@ def run(
     location: str,
     measure: str,
     binary: bool = False,
-    cutoff: float = 1.0,
+    cutoff: float = 1,
     iterations: int = 20,
     procedure: Literal["max", "sqrt"] = "max",
 ) -> pl.DataFrame:
-    """
-    """
+    """ """
 
-    res_rca = calculate_rca(data,
-                            activity=activity,
-                            location=location,
-                            measure=measure,
-                            binary=binary,
-                            cutoff=cutoff)
+    res_rca = calculate_rca(
+        data,
+        activity=activity,
+        location=location,
+        measure=measure,
+        binary=binary,
+        cutoff=cutoff,
+    )
     res_rca = res_rca.collect()
 
     if model == "rca":
         return res_rca
 
     elif model in ("eci", "pci"):
-        res_eci, res_pci = calculate_complexity(res_rca,
-                                                activity=activity,
-                                                location=location,
-                                                measure=measure,
-                                                iterations=iterations)
+        res_eci, res_pci = calculate_complexity(
+            res_rca,
+            activity=activity,
+            location=location,
+            measure=measure,
+            iterations=iterations,
+        )
 
         return res_eci if model == "eci" else res_pci
 
