@@ -24,13 +24,13 @@ def proximity(
     and returns a square matrix with the proximity between the elements.
 
     ### Args:
-    df_rca (pd.DataFrame) -- A RCA matrix of pivotted values.
+    * df_rca (pd.DataFrame) -- A RCA matrix of pivotted values.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff threshold value.
+    * cutoff (float, optional) -- Set the cutoff threshold value.
         Internally, RCA values under it will be set to zero, one otherwise.
         Default value: `1`.
-    procedure (str, optional) -- Determines how to calcule the denominator.
+    * procedure (str, optional) -- Determines how to calcule the denominator.
         Available options are "sqrt" and "max". Default value: `"max"`.
 
     ### Returns:
@@ -94,13 +94,13 @@ def relatedness(
     in the future.
 
     ### Args:
-    rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
+    * rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff threshold value.
+    * cutoff (float, optional) -- Set the cutoff threshold value.
         Internally, RCA values under it will be set to zero, one otherwise.
         Default value: `1`.
-    proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+    * proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
         If not provided, will be calculated using the "max" procedure, and
         the same cutoff value for this call.
 
@@ -142,13 +142,13 @@ def distance(
     as the
 
     ### Args:
-    df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
+    * df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
+    * cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
         This will not be used if the `proximities` matrix is provided.
         Default value: `1`.
-    proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+    * proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
         If not provided, will be calculated using the "max" procedure, and the
         same cutoff value for this call.
 
@@ -169,14 +169,14 @@ def opportunity_gain(
     characteristic, relative to how this affects other characteristics.
 
     ### Args:
-    df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
+    * df_rca (pd.DataFrame) -- Matrix of RCAs for a certain location.
 
     ### Keyword Args:
-    pci (pd.Series) -- Calculated Product Complexity Index from the RCA data.
-    cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
+    * pci (pd.Series) -- Calculated Product Complexity Index from the RCA data.
+    * cutoff (float, optional) -- Set the cutoff value for the proximity calculation.
         This will not be used if the `proximities` matrix is provided.
         Default value: `1`.
-    proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+    * proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
         If not provided, will be calculated using the "max" procedure, and the
         same cutoff value for this call.
 
@@ -228,10 +228,11 @@ def similarity(
     elements.
 
     ### Args:
-    rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
+    * rcas (pd.DataFrame) -- A RCA matrix of pivotted values.
 
     ### Keyword Args:
-    epsilon (float, optional) -- A low value to prevent the calculation of logarithm to output `-Inf`. Default value: `0.1`.
+    * epsilon (float, optional) -- A low value to prevent the calculation of logarithm to output `-Inf`.
+        Default value: `0.1`.
 
     ### Returns:
     (pd.DataFrame) -- A square matrix with the Export Similarity Index between the elements.
@@ -262,15 +263,13 @@ def _pmi(
     Index (PGI) and the Product Emission Intensity Index (PEII).
 
     ### Args:
-    tbl (pd.DataFrame) -- A pivoted table using a geographic index, columns with the categories
-        to be evaluated, and the measurement of the data as values.
-    rcas (pd.DataFrame) --
-    measure (pd.DataFrame) -- A table using a geographic index, with a single column with the
-        measure values.
-    measure_name (str) -- A string with the name of the measure.
+    * tbl (pd.DataFrame) -- A pivoted table using a geographic index, columns with the categories to be evaluated, and the measurement of the data as values.
+    * rcas (pd.DataFrame) -- The RCA calculation obtained from the `tbl` data.
+    * measure (pd.DataFrame) -- A table using a geographic index, with a single column with the measure values.
+    * measure_name (str) -- A string with the name of the measure.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+    * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
         Internally, RCA values under it will be set to zero, one otherwise.
         Default value: `1`.
 
@@ -322,19 +321,25 @@ def pgi(
     cutoff: float = 1,
 ) -> pd.DataFrame:
     """Calculates the Product Gini Index (PGI) for a pivoted matrix.
+
     It is important to note that even though the functions do not use a
     parameter in relation to time, the data used for the calculations must
     be per period; for example working with World Exports for the year 2020.
     Also, the index always has to be a geographic level.
     It is also important to make sure that the input matrices are aligned,
     that is, that both matrices consider the same geographic units.
-    Arguments:
-        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
-            columns with the categories to be evaluated and the measurement of
-            the data as values.
-        gini (pandas.DataFrame) -- A matrix of GINI indices using a geographic index.
-    Returns:
-        (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
+
+    ### Args:
+    * tbl (pandas.DataFrame) -- A pivoted table using a geographic index, columns with the categories to be evaluated and the measurement of the data as values.
+    * gini (pandas.DataFrame) -- A matrix of GINI indices using a geographic index.
+
+    ### Keyword Args:
+    * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+        Internally, RCA values under it will be set to zero, one otherwise.
+        Default value: `1`.
+
+    ### Returns:
+    (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
     """
 
     pgip = _pmi(
@@ -357,19 +362,25 @@ def peii(
 ) -> pd.DataFrame:
     """
     Calculates the Product Emissions Intensity Index (PEII) for a pivoted matrix.
+
     It is important to note that even though the functions do not use a
     parameter in relation to time, the data used for the calculations must
     be per period; for example working with World Exports for the year 2020.
     Also, the index always has to be a geographic level.
     It is also important to make sure that the input matrices are aligned,
     that is, that both matrices consider the same geographic units.
-    Arguments:
-        tbl (pandas.DataFrame) -- A pivoted table using a geographic index,
-            columns with the categories to be evaluated and the measurement of
-            the data as values.
-        emissions (pandas.DataFrame) -- A matrix of emissions intensity using a geographic index.
-    Returns:
-        (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
+
+    ### Args:
+    * tbl (pandas.DataFrame) -- A pivoted table using a geographic index, columns with the categories to be evaluated and the measurement of the data as values.
+    * emissions (pandas.DataFrame) -- A matrix of emissions intensity using a geographic index.
+
+    ### Keyword Args:
+    * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+        Internally, RCA values under it will be set to zero, one otherwise.
+        Default value: `1`.
+
+    ### Returns:
+    (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
     """
 
     peii = _pmi(

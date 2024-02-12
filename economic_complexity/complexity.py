@@ -33,13 +33,13 @@ def complexity(
     ```
 
     ### Args:
-    df_rca (pd.DataFrame) -- Pivotted RCA matrix.
+    * df_rca (pd.DataFrame) -- Pivotted RCA matrix.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
-    drop (bool, optional) -- Boolean to ensure that returns include NaN values.
+    * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+    * drop (bool, optional) -- Boolean to ensure that returns include NaN values.
         Default value: `True`.
-    iterations (int, optional) -- Limit of recursive calculations for kp and kc.
+    * iterations (int, optional) -- Limit of recursive calculations for kp and kc.
         Default value: `20`.
 
     ### Returns:

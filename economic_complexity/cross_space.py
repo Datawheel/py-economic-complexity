@@ -23,13 +23,13 @@ def cross_proximity(
     Note the characteristic in both RCA matrices can't be the location.
 
     ### Args:
-    rcas_a (pd.DataFrame) -- The RCA matrix for the main characteristic to evaluate.
+    * rcas_a (pd.DataFrame) -- The RCA matrix for the main characteristic to evaluate.
         It must be pivotted, and the characteristic can't be the location.
-    rcas_b (pd.DataFrame) -- The RCA matrix for a secondary characteristic to evaluate.
+    * rcas_b (pd.DataFrame) -- The RCA matrix for a secondary characteristic to evaluate.
         It must be pivotted, and the characteristic can't be the location.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+    * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
         Internally, RCA values under it will be set to zero, one otherwise.
         Default value: `1`.
 
@@ -89,13 +89,11 @@ def cross_relatedness(
     ```
 
     ### Args:
-    df_rca (pd.DataFrame) -- A pivotted table obtained from the RCA function.
-        This table describes the main characteristic to evaluate.
-    x_proximity (pd.DataFrame) -- The cross-proximity matrix obtained between the
-        `rcas` matrix in the first parameter, and another RCA matrix.
+    * df_rca (pd.DataFrame) -- A pivotted table obtained from the RCA function. This table describes the main characteristic to evaluate.
+    * x_proximity (pd.DataFrame) -- The cross-proximity matrix obtained between the `rcas` matrix in the first parameter, and another RCA matrix.
 
     ### Keyword Args:
-    cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
+    * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
         Internally, RCA values under it will be set to zero, one otherwise.
         Default value: `1`.
 
