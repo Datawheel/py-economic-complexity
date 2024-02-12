@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "economic-complexity"
-version = "0.2.0"
+version = "0.2.1"
 description = "Functions to calculate Economic Complexity indicators."
 authors = [
   "Jelmy Hermosilla <jelmy@datawheel.us>",
