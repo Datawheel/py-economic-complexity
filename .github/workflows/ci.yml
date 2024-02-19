@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Publish a new version
 
 on:
   workflow_dispatch:
@@ -31,12 +31,12 @@ jobs:
         run: poetry install --with dev
 
       - name: Run tests
-        run: pytest ./tests
+        run: poetry run pytest ./tests
 
-  release:
+  publish:
     needs: test
     runs-on: ubuntu-latest
-    name: Create new release in PyPI
+    name: Publish a new version on PyPI
     steps:
       - uses: actions/checkout@v4
 
