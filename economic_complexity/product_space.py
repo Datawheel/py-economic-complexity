@@ -250,7 +250,6 @@ def _pmi(
     tbl: pd.DataFrame,
     rcas: pd.DataFrame,
     measure: pd.DataFrame,
-    measure_name: str,
     *,
     cutoff: float = 1,
 ) -> pd.DataFrame:
@@ -266,7 +265,6 @@ def _pmi(
     * tbl (pd.DataFrame) -- A pivoted table using a geographic index, columns with the categories to be evaluated, and the measurement of the data as values.
     * rcas (pd.DataFrame) -- The RCA calculation obtained from the `tbl` data.
     * measure (pd.DataFrame) -- A table using a geographic index, with a single column with the measure values.
-    * measure_name (str) -- A string with the name of the measure.
 
     ### Keyword Args:
     * cutoff (float, optional) -- Set the cutoff threshold value for the RCA matrix.
@@ -308,8 +306,6 @@ def _pmi(
     num = m.multiply(scp).T.dot(measure)
 
     pmi: pd.DataFrame = np.divide(num, normp)  # type: ignore
-    pmi.rename(columns={pmi.columns[0]: measure_name}, inplace=True)
-
     return pmi
 
 
@@ -319,6 +315,7 @@ def pgi(
     gini: pd.DataFrame,
     *,
     cutoff: float = 1,
+    name: str = "pgi",
 ) -> pd.DataFrame:
     """Calculates the Product Gini Index (PGI) for a pivoted matrix.
 
@@ -342,14 +339,8 @@ def pgi(
     (pandas.DataFrame) -- PGI matrix with categories evaluated as an index.
     """
 
-    pgip = _pmi(
-        tbl=tbl,
-        rcas=rcas,
-        measure=gini,
-        measure_name="pgi",
-        cutoff=cutoff,
-    )
-
+    pgip = _pmi(tbl=tbl, rcas=rcas, measure=gini, cutoff=cutoff)
+    pgip.rename(columns={pgip.columns[0]: name}, inplace=True)
     return pgip
 
 
@@ -359,6 +350,7 @@ def peii(
     emissions: pd.DataFrame,
     *,
     cutoff: float = 1,
+    name: str = "peii",
 ) -> pd.DataFrame:
     """
     Calculates the Product Emissions Intensity Index (PEII) for a pivoted matrix.
@@ -383,11 +375,6 @@ def peii(
     (pandas.DataFrame) -- PEII matrix with categories evaluated as an index.
     """
 
-    peii = _pmi(
-        tbl=tbl,
-        rcas=rcas,
-        measure=emissions,
-        measure_name="peii",
-        cutoff=cutoff,
-    )
+    peii = _pmi(tbl=tbl, rcas=rcas, measure=emissions, cutoff=cutoff)
+    peii.rename(columns={peii.columns[0]: name}, inplace=True)
     return peii
