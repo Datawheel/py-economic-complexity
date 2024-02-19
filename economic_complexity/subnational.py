@@ -30,7 +30,7 @@ def complexity_subnational(
     """
 
     # This functions computes the ECI for a RCA matrix using an external PCI index.
-    geo_col_name = rcas.index.name
+    geo_col_name = df_rca.index.name
 
     # Create an empty Series to store the eci_external values
     eci_external = pd.Series(dtype=float)
