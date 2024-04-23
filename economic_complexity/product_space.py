@@ -378,3 +378,48 @@ def peii(
     peii = _pmi(tbl=tbl, rcas=rcas, measure=emissions, cutoff=cutoff)
     peii.rename(columns={peii.columns[0]: name}, inplace=True)
     return peii
+
+
+def relative_relatedness(
+    rcas: pd.DataFrame,
+    *,
+    cutoff: float = 1,
+    proximities: Optional[pd.DataFrame] = None,
+) -> pd.DataFrame:
+    """Calculates the Relative Relatedness, given a matrix of RCAs for the economic
+    activities of a location, and a matrix of Proximities.
+
+    ### Args:
+    * rcas (pd.DataFrame) -- Matrix of RCAs for a certain location.
+
+    ### Keyword Args:
+    * cutoff (float, optional) -- Set the cutoff threshold value.
+        Internally, RCA values under it will be set to zero, one otherwise.
+        Default value: `1`.
+    * proximities (pd.DataFrame, optional) -- Matrix with the proximity between the elements.
+        If not provided, will be calculated using the "max" procedure, and
+        the same cutoff value for this call.
+
+    ### Returns:
+    (pd.DataFrame) -- A matrix with the probability that a location generates
+        comparative advantages in a economic activity.
+    """
+    
+    opp = rcas.copy()
+
+    if cutoff == 0:
+        opp = 1
+    else: 
+        opp[opp >= cutoff] = pd.NA
+        opp[opp < cutoff] = 1
+    
+    if proximities is None:
+        wcp = relatedness(rcas, cutoff)
+    else:
+        wcp = relatedness(rcas, cutoff, proximities)
+
+    wcp_opp = opp*wcp
+    wcp_mean =  wcp_opp.mean(axis=1)
+    wcp_std =  wcp_opp.std(axis=1)
+
+    return wcp.transform(lambda x: (x-wcp_mean)/wcp_std)
