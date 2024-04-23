@@ -36,3 +36,7 @@ def test_pgi(df_global_exports, df_rca):
 
 def test_peii():
     pass
+
+def test_relative_relatedness(df_rca):
+    relt = ec.relative_relatedness(df_rca)
+    pass
