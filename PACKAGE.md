@@ -1,5 +1,5 @@
 This package contains functions to calculate Economic Complexity indicators.  
-The functions handle the data through `pandas.DataFrame` objects.
+The functions handle the data through `Series` and `DataFrame` objects from their respective libraries.
 
 <p>
 <a href="https://github.com/Datawheel/py-economic-complexity"><img src="https://flat.badgen.net/github/release/Datawheel/py-economic-complexity" /></a>
@@ -10,21 +10,25 @@ The functions handle the data through `pandas.DataFrame` objects.
 
 ## Installation
 
-We recommend the use of `poetry`, to resolve the best version of the dependencies that works with your current project.
-
-```bash
-$ poetry add economic-complexity
-```
-
-For the time being the library is compatible with both pandas and polars, though we intend to migrate to polars completely. Specify the package you want to use as backend as an extra at installation:
+We recommend the use of `poetry`, to resolve the best version of the dependencies that works with your current project. Specify the package you want to use as backend as an extra at installation:
 
 ```bash
 $ poetry add economic-complexity[pandas]
-$ # or
+```
+```bash
 $ poetry add economic-complexity[polars]
 ```
 
 ## Tutorial
+
+To use the provided functions, import the submodule for the library you intend to work with:
+
+```python
+# if you are using pandas
+import economic_complexity.pandas as ec
+# elif you are using polars
+import economic_complexity.polars as ec
+```
 
 We have [a brief Tutorial](https://github.com/Datawheel/py-economic-complexity/blob/main/docs/TUTORIAL.ipynb), using data from the Observatory of Economic Complexity, to get started on how to use the basic functions of this package.  
 More complex functions use the resulting dataframes of the basic functions as arguments.

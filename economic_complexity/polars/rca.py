@@ -11,7 +11,7 @@ from typing import Union
 import polars as pl
 
 
-def calculate_rca(
+def rca(
     df: Union[pl.DataFrame, pl.LazyFrame],
     *,
     activity: str,

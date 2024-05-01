@@ -10,7 +10,7 @@ from typing import Tuple
 import polars as pl
 
 
-def calculate_complexity(
+def complexity(
     rca: pl.DataFrame,
     *,
     activity: str,
@@ -41,19 +41,31 @@ def calculate_complexity(
         kc_temp = kc.clone()
         kp_temp = kp.clone()
 
-        kp = (rca.select(pl.all().exclude(location)) * kc_temp).sum().transpose().to_series() / kp0
+        kp = (
+            rca.select(pl.all().exclude(location)) * kc_temp
+        ).sum().transpose().to_series() / kp0
 
         if i < (iterations - 1):
-            kc = (rca.select(pl.all().exclude(location)).transpose() * kp_temp).sum().transpose().to_series() / kc0
+            kc = (
+                rca.select(pl.all().exclude(location)).transpose() * kp_temp
+            ).sum().transpose().to_series() / kc0
 
     geo_complexity = (kc - kc.mean()) / kc.std()
     prod_complexity = (kp - kp.mean()) / kp.std()
 
     # IDs column
-    geo_complexity = pl.DataFrame([pl.Series(f"{measure} ECI", geo_complexity),
-                                   pl.Series(location, rca[location])])
+    geo_complexity = pl.DataFrame(
+        [
+            pl.Series(f"{measure} ECI", geo_complexity),
+            pl.Series(location, rca[location]),
+        ]
+    )
 
-    prod_complexity = pl.DataFrame([pl.Series(f"{measure} PCI", prod_complexity),
-                                    pl.Series(activity, rca.columns[1:])])
+    prod_complexity = pl.DataFrame(
+        [
+            pl.Series(f"{measure} PCI", prod_complexity),
+            pl.Series(activity, rca.columns[1:]),
+        ]
+    )
 
     return geo_complexity, prod_complexity

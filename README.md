@@ -6,15 +6,9 @@ This package allows to calculate Economic Complexity measures. For further refer
 
 We also have [a brief Tutorial](./docs/TUTORIAL.ipynb), using data from the OEC, to get started on how to use the basic functions of this package.
 
-<a href="https://github.com/Datawheel/py-economic-complexity/blob/main/LICENSE">
-  <img src="https://flat.badgen.net/github/license/Datawheel/py-economic-complexity" />
-</a>
-<a href="https://github.com/Datawheel/py-economic-complexity/issues">
-  <img src="https://flat.badgen.net/github/issues/Datawheel/py-economic-complexity" />
-</a>
-<a href="https://pypi.org/project/economic-complexity/">
-  <img src="https://flat.badgen.net/pypi/v/economic-complexity" />
-</a>
+<a href="https://github.com/Datawheel/py-economic-complexity/blob/main/LICENSE"><img src="https://flat.badgen.net/github/license/Datawheel/py-economic-complexity" /></a>
+<a href="https://github.com/Datawheel/py-economic-complexity/issues"><img src="https://flat.badgen.net/github/issues/Datawheel/py-economic-complexity" /></a>
+<a href="https://pypi.org/project/economic-complexity/"><img src="https://flat.badgen.net/pypi/v/economic-complexity" /></a>
 
 ## Usage
 

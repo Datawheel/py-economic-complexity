@@ -29,11 +29,11 @@ def rca(tbl: pd.DataFrame) -> pd.DataFrame:
     # fill missing values with zeros
     tbl = tbl.fillna(value=0)
 
-    col_sums = tbl.sum(axis=1) # 1:columns
+    col_sums = tbl.sum(axis=1)  # 1:columns
     col_sums = col_sums.to_numpy().reshape((len(col_sums), 1))
 
     rca_numerator = np.divide(tbl, col_sums)
-    row_sums = tbl.sum(axis=0) # 0:index
+    row_sums = tbl.sum(axis=0)  # 0:index
 
     total_sum = tbl.sum().sum()
     rca_denominator = row_sums / total_sum
