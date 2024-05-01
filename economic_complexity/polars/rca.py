@@ -62,41 +62,34 @@ def calculate_rca(
     lf = lf.fill_nan(0).fill_null(0)
 
     # Calculate sum of measure per activity
-    total_activity = lf.groupby(by=activity).agg(
+    total_activity = lf.group_by(activity).agg(
         pl.sum(measure).alias("_sum_by_activity")
     )
 
     # Calculate sum of measure per location
-    total_location = lf.groupby(by=location).agg(
+    total_location = lf.group_by(location).agg(
         pl.sum(measure).alias("_sum_by_location")
     )
 
     # Merge sums of measure per activity and per location
     merged = lf.join(total_activity, on=activity).join(total_location, on=location)
 
-    # Calculate the total sum of the measure
-    total_measure = total_activity.select(
-        pl.col("_sum_by_activity").alias("_total_measure_sum")
-    ).sum()
-
     # Build the expression for the column division that calculates the RCA
-    rca_expr = (
-        (pl.col(measure) / pl.col("_sum_by_location"))
-        / (pl.col("_sum_by_activity") / pl.first("_total_measure_sum"))
+    rca_expr = (pl.col(measure) / pl.col("_sum_by_location")) / (
+        pl.col("_sum_by_activity") / pl.sum(measure)
     )
     # Do the calculation
-    rca = merged\
-        .with_context(total_measure)\
-        .with_columns(rca_expr.alias(measure + " RCA"))\
-        .drop(["_sum_by_activity", "_sum_by_location"])
+    rca = merged.with_columns(rca_expr.alias(measure + " RCA")).drop(
+        ["_sum_by_activity", "_sum_by_location"]
+    )
 
     # Apply binarization of matrix
     if binary:
         rca = rca.with_columns(
             pl.when(pl.col(measure + " RCA") >= cutoff)
-                .then(1.0)
-                .otherwise(0.0)
-                .alias(measure + " RCA")
+            .then(1.0)
+            .otherwise(0.0)
+            .alias(measure + " RCA")
         )
 
     return rca

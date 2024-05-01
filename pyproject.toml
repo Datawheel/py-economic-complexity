@@ -18,7 +18,7 @@ repository = "https://github.com/Datawheel/py-economic-complexity"
 [tool.poetry.dependencies]
 python = "^3.8"
 pandas = {version = "^1.5.0", optional = true}
-polars = {version = ">=0.18.0", optional = true}
+polars = {version = "^0.20.0", optional = true}
 
 [tool.poetry.extras]
 pandas = ["pandas"]
