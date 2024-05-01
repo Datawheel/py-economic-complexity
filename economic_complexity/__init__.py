@@ -18,7 +18,7 @@ from .product_space import (
 from .rca import rca
 from .subnational import complexity_subnational
 
-__version_info__ = ("0", "2", "2")
+__version_info__ = ("0", "2", "3")
 __version__ = ".".join(__version_info__)
 
 __all__ = (
