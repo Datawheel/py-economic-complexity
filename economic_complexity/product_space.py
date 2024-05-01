@@ -1,11 +1,9 @@
-"""Product Space module
-"""
+"""Product Space module"""
 
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 import pandas as pd
-from typing_extensions import Literal
 
 
 def proximity(
@@ -404,22 +402,19 @@ def relative_relatedness(
     (pd.DataFrame) -- A matrix with the probability that a location generates
         comparative advantages in a economic activity.
     """
-    
+
     opp = rcas.copy()
 
     if cutoff == 0:
         opp = 1
-    else: 
+    else:
         opp[opp >= cutoff] = pd.NA
         opp[opp < cutoff] = 1
-    
-    if proximities is None:
-        wcp = relatedness(rcas, cutoff)
-    else:
-        wcp = relatedness(rcas, cutoff, proximities)
 
-    wcp_opp = opp*wcp
-    wcp_mean =  wcp_opp.mean(axis=1)
-    wcp_std =  wcp_opp.std(axis=1)
+    wcp = relatedness(rcas, cutoff=cutoff, proximities=proximities)
 
-    return wcp.transform(lambda x: (x-wcp_mean)/wcp_std)
+    wcp_opp = opp * wcp
+    wcp_mean = wcp_opp.mean(axis=1)
+    wcp_std = wcp_opp.std(axis=1)
+
+    return wcp.transform(lambda x: (x - wcp_mean) / wcp_std)

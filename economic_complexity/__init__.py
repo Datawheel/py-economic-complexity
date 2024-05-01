@@ -12,8 +12,8 @@ from .product_space import (
     pgi,
     proximity,
     relatedness,
+    relative_relatedness,
     similarity,
-    relative_relatedness
 )
 from .rca import rca
 from .subnational import complexity_subnational
@@ -34,5 +34,5 @@ __all__ = (
     "pgi",
     "peii",
     "complexity_subnational",
-    "relative_relatedness"
+    "relative_relatedness",
 )
