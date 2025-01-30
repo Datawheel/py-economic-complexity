@@ -405,14 +405,8 @@ def relative_relatedness(
 
     opp = rcas.copy()
 
-    if cutoff == 0: #all activities
-            opp[:] = 1
-    elif cutoff > 0: #cuttoff = 1 activities with comparative advantages
-        opp[opp >= cutoff] = 1
-        opp[opp < cutoff] = pd.NA
-    else: #<0 cutoff = -1 activities without comparative advantages,
-        opp[opp >= cutoff * -1] = pd.NA
-        opp[opp < cutoff * -1] = 1
+    opp[opp >= cutoff] = pd.NA
+    opp[opp < cutoff] = 1
 
     wcp = relatedness(rcas, proximities=proximities)
 
