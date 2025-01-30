@@ -408,7 +408,7 @@ def relative_relatedness(
     opp[opp >= cutoff] = pd.NA
     opp[opp < cutoff] = 1
 
-    wcp = relatedness(rcas, proximities=proximities)
+    wcp = relatedness(rcas, cutoff=cutoff, proximities=proximities)
 
     wcp_opp = opp * wcp
     wcp_mean = wcp_opp.mean(axis=1)
