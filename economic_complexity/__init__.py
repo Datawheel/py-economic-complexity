@@ -1,4 +1,4 @@
-"""Economic Complexity
+"""Economic Complexity calculations module.
 
 This module contains functions to ease the calculation of Economic Complexity values.
 """
@@ -18,21 +18,21 @@ from .product_space import (
 from .rca import rca
 from .subnational import complexity_subnational
 
-__version_info__ = ("0", "2", "4")
+__version_info__ = ("0", "3", "0")
 __version__ = ".".join(__version_info__)
 
 __all__ = (
-    "rca",
     "complexity",
-    "distance",
-    "opportunity_gain",
-    "proximity",
-    "relatedness",
+    "complexity_subnational",
     "cross_proximity",
     "cross_relatedness",
-    "similarity",
-    "pgi",
+    "distance",
+    "opportunity_gain",
     "peii",
-    "complexity_subnational",
+    "pgi",
+    "proximity",
+    "rca",
+    "relatedness",
     "relative_relatedness",
+    "similarity",
 )
