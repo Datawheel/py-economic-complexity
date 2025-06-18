@@ -1,36 +1,47 @@
-[tool.poetry]
-name = "economic-complexity"
-version = "0.2.4"
-description = "Functions to calculate Economic Complexity indicators."
-authors = [
-  "Jelmy Hermosilla <jelmy@datawheel.us>",
-  "Nicolas Netz <nicolas.netz@datawheel.us>",
-  "Samuel Osorio <samuel@datawheel.us>",
-  "Marcos Perez <marcos@datawheel.us>",
-]
-maintainers = [
-  "Francisco Abarzua <francisco@datawheel.us>",
-]
-license = "MIT"
-readme = "PACKAGE.md"
-repository = "https://github.com/Datawheel/py-economic-complexity"
-
-[tool.poetry.dependencies]
-python = "^3.8"
-pandas = {version = "^1.5.0", optional = true}
-polars = {version = "^0.20.0", optional = true}
-
-[tool.poetry.extras]
-pandas = ["pandas"]
-polars = ["polars"]
-
-[tool.poetry.group.dev.dependencies]
-ipykernel = "^6.25.2"
-pandas = "^1.5.3"
-polars = ">=0.18.0"
-pytest = "^7.4.2"
-ruff = "^0.4.2"
-
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "economic-complexity"
+version = "0.2.4"
+description = "Functions to calculate Economic Complexity indicators."
+requires-python = ">=3.9, <4.0"
+dynamic = [ "classifiers" ]
+readme = "PACKAGE.md"
+authors = [
+  {name = "Jelmy Hermosilla", email = "jelmy@datawheel.us"},
+  {name = "Nicolas Netz", email = "nicolas.netz@datawheel.us"},
+  {name = "Samuel Osorio", email = "samuel@datawheel.us"},
+  {name = "Marcos Perez", email = "marcos@datawheel.us"},
+]
+maintainers = [
+  {name = "Francisco Abarzua", email = "francisco@datawheel.us"},
+]
+license = "MIT"
+dependencies = []
+
+[project.optional-dependencies]
+pandas = ["pandas (>=1.5.0,<3.0.0)"]
+polars = ["polars (>=1.0.0)"]
+
+[project.urls]
+repository = "https://github.com/Datawheel/py-economic-complexity"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+classifiers = [
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.25.2"
+ruff = "^0.12.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.0.0"
+
+[tool.pyright]
+pythonVersion = "3.9"
+venv = ".venv"
+venvPath = "."
