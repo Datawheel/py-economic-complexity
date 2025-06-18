@@ -299,11 +299,9 @@ def _pmi(
 
     # get Np array
     normp = m.multiply(scp).sum(axis=0)
-    normp = pd.DataFrame(normp)
-
     num = m.multiply(scp).T.dot(measure)
 
-    pmi: pd.DataFrame = np.divide(num, normp)  # type: ignore
+    pmi = num.div(normp, axis=0)
     return pmi
 
 
@@ -338,8 +336,7 @@ def pgi(
     """
 
     pgip = _pmi(tbl=tbl, rcas=rcas, measure=gini, cutoff=cutoff)
-    pgip.rename(columns={pgip.columns[0]: name}, inplace=True)
-    return pgip
+    return pgip.rename(columns={pgip.columns[0]: name})
 
 
 def peii(
@@ -374,8 +371,7 @@ def peii(
     """
 
     peii = _pmi(tbl=tbl, rcas=rcas, measure=emissions, cutoff=cutoff)
-    peii.rename(columns={peii.columns[0]: name}, inplace=True)
-    return peii
+    return peii.rename(columns={peii.columns[0]: name})
 
 
 def relative_relatedness(
