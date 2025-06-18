@@ -401,11 +401,8 @@ def relative_relatedness(
 
     opp = rcas.copy()
 
-    if cutoff == 0:
-        opp = 1
-    else:
-        opp[opp >= cutoff] = pd.NA
-        opp[opp < cutoff] = 1
+    opp[opp >= cutoff] = pd.NA
+    opp[opp < cutoff] = 1
 
     wcp = relatedness(rcas, cutoff=cutoff, proximities=proximities)
 
